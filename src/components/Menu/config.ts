@@ -37,7 +37,7 @@ const config: MenuEntry[] = [
   {
     label: "Bridge",
     icon: "BridgeIcon",
-    href: "https://app.srk.finance/#/bridge",
+    href: "/Bridge",
   },
   {
     label: "Launch",

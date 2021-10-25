@@ -12,6 +12,7 @@ import ToastListener from './components/ToastListener'
 import PageLoader from './components/PageLoader'
 import EasterEgg from './components/EasterEgg'
 import Pools from './views/Pools'
+import Bridge from './views/Bridge'
 
 // Route-based code splitting
 // Only pool is included in the main bundle because of it's the most visited page
@@ -46,14 +47,20 @@ const App: React.FC = () => {
       <Menu>
         <SuspenseWithChunkError fallback={<PageLoader />}>
           <Switch>
-            <Route path='/' exact>
+            {/* <Route path='/' exact>
               <Pools />
+            </Route> */}
+            <Route path='/' exact>
+              <Bridge />
             </Route>
             <Route path='/farms'>
               <Farms />
             </Route>
             <Route path='/pools'>
               <Pools />
+            </Route>
+            <Route path='/bridge'>
+              <Bridge />
             </Route>
             <Route path='/lottery'>
               <Lottery />
