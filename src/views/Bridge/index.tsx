@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, useContext} from 'react'
+import React, { useEffect, useMemo, useRef, useState, useContext } from 'react'
 import { useLocation, Route, useRouteMatch } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
@@ -31,7 +31,7 @@ import PoolsTable from './components/PoolsTable/PoolsTable'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import { getAprData, getCakeVaultEarnings } from './helpers'
 import { ReactComponent as PoolsDarkLogo } from './components/assets/pool-dark.svg';
-import { ReactComponent as PoolsLightLogo} from './components/assets/pool-light.svg';
+import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg';
 
 
 const CardLayout = styled(FlexLayout)`
@@ -106,9 +106,9 @@ const Pools: React.FC = () => {
   const [viewMode, setViewMode] = usePersistState(ViewMode.TABLE, { localStorageKey: 'pancake_farm_view' })
   const [searchQuery, setSearchQuery] = useState('')
   const [sortOption, setSortOption] = useState('hot')
-  const isMobile = useMedia({maxWidth: 500})
-  const isStandard = useMedia({maxWidth: 1366})
-  const isDesktop = useMedia({maxWidth: 1920})
+  const isMobile = useMedia({ maxWidth: 500 })
+  const isStandard = useMedia({ maxWidth: 1366 })
+  const isDesktop = useMedia({ maxWidth: 1920 })
   const {
     userData: { cakeAtLastUserAction, userShares },
     fees: { performanceFee },
@@ -200,12 +200,12 @@ const Pools: React.FC = () => {
             }
             return pool.isAutoVault
               ? getCakeVaultEarnings(
-                  account,
-                  cakeAtLastUserAction,
-                  userShares,
-                  pricePerFullShare,
-                  pool.earningTokenPrice,
-                ).autoUsdToDisplay
+                account,
+                cakeAtLastUserAction,
+                userShares,
+                pricePerFullShare,
+                pool.earningTokenPrice,
+              ).autoUsdToDisplay
               : pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
           },
           'desc',
@@ -223,7 +223,7 @@ const Pools: React.FC = () => {
 
   const poolsToShow = () => {
     let chosenPools = []
-    if (showUpcomingPools){
+    if (showUpcomingPools) {
       chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools // TODO: @koji @mat-ivan Please apply here how to filter upcoming pools
     }
     else if (showFinishedPools) {
@@ -260,149 +260,149 @@ const Pools: React.FC = () => {
 
 
   return (
-       
-       <StyledContainer style={isStandard? { marginLeft: '18vw', marginRight: '18vw' } : { marginLeft: '28vw', marginRight: '28vw' }}>
+
+    <StyledContainer style={isStandard ? { marginLeft: '18vw', marginRight: '18vw' } : { marginLeft: '28vw', marginRight: '28vw' }}>
       <Flex>
 
         <Flex>
           <Text color="text" fontSize="16px" marginBottom="40px">
             Asset
             <Flex
-            onMouseEnter={() => setActiveSelect(true)}
-            onMouseLeave={() => setActiveSelect(false)}>
-            <Dropdown
-              position="top-right"
-              target={
-                <Button
-                  // type="DropdownItem"
-                  style={{ columnGap: '540px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
-                // placeholder={t('Select asset')}
-                // readOnly
-                >
-                  <Text color="textSubtle" style={{ alignContent: 'flex-start' }} >Select asset</Text>
-                  <Text style={{ height: '25px' }}> {activeSelect ? <ChevronUp /> : <ChevronRight />}</Text>
-                </Button>
-              }
-            >
-              {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
-              <Button fullWidth variant="text" defaultValue="setActiveSelect">
-                <Text>
-                  <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> USDT
-                </Text>
-              </Button>
-              <Button fullWidth variant="text">
-                <Text> <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> SRKb</Text>
-              </Button>
-              {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
-            </Dropdown>
-            </Flex>
-            
-             
-            <Flex flexDirection="row" style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
-              <Flex style={{ width: '100%' }}>
-              <Text color="text" fontSize="16px" marginBottom="40px">
-                From
-                <Dropdown
+              onMouseEnter={() => setActiveSelect(true)}
+              onMouseLeave={() => setActiveSelect(false)}>
+              <Dropdown
                 position="top-right"
                 target={
-                  <Input
-                  // fullWidth
-                  // disabled
-                  // value={collection}
-                  type="DropdownItem"
-                  style={{ marginRight: '76px', marginTop: '15px', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
-                  placeholder={t('Select Network')}
-                  readOnly
-                  />
+                  <Button
+                    // type="DropdownItem"
+                    style={{ columnGap: '540px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                  // placeholder={t('Select asset')}
+                  // readOnly
+                  >
+                    <Text color="textSubtle" style={{ alignContent: 'flex-start' }} >Select asset</Text>
+                    <Text style={{ height: '25px' }}> {activeSelect ? <ChevronUp /> : <ChevronRight />}</Text>
+                  </Button>
                 }
               >
-                <Button fullWidth variant="text">
+                {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
+                <Button fullWidth variant="text" defaultValue="setActiveSelect">
                   <Text>
-                  <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }}/> TRX Network
-                </Text>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> USDT
+                  </Text>
                 </Button>
                 <Button fullWidth variant="text">
-                <Text><img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }}/> Poly Network</Text>
+                  <Text> <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> SRKb</Text>
                 </Button>
-                <Button fullWidth variant="text">
-                <Text> <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }}/> Binance Smart Chain</Text>
-                </Button>
-                  {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
+                {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
               </Dropdown>
+            </Flex>
+
+
+            <Flex flexDirection="row" style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
+              <Flex style={{ width: '100%' }}>
+                <Text color="text" fontSize="16px" marginBottom="40px">
+                  From
+                  <Dropdown
+                    position="top-right"
+                    target={
+                      <Input
+                        // fullWidth
+                        // disabled
+                        // value={collection}
+                        type="DropdownItem"
+                        style={{ marginRight: '76px', marginTop: '15px', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                        placeholder={t('Select Network')}
+                        readOnly
+                      />
+                    }
+                  >
+                    <Button fullWidth variant="text">
+                      <Text>
+                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> TRX Network
+                      </Text>
+                    </Button>
+                    <Button fullWidth variant="text">
+                      <Text><img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> Poly Network</Text>
+                    </Button>
+                    <Button fullWidth variant="text">
+                      <Text> <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> Binance Smart Chain</Text>
+                    </Button>
+                    {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
+                  </Dropdown>
                 </Text>
               </Flex>
 
               <Flex style={{ justifyContent: 'center' }}>
-              <ArrowForwardIcon style={isStandard? { backgroundColor: theme.colors.primary, marginTop: '39px', marginBottom: '40px', width: '7vh', height: '8.5vh', borderRadius: '4px', padding: '8px'} : { backgroundColor: theme.colors.primary, marginTop: '38px', marginBottom: '40px', width: '5vh', height: '4.8vh', borderRadius: '6px', padding: '8px'}} />
+                <ArrowForwardIcon style={isStandard ? { backgroundColor: theme.colors.primary, marginTop: '39px', marginBottom: '40px', width: '7vh', height: '8.5vh', borderRadius: '4px', padding: '8px' } : { backgroundColor: theme.colors.primary, marginTop: '38px', marginBottom: '40px', width: '5vh', height: '4.8vh', borderRadius: '6px', padding: '8px' }} />
               </Flex>
 
               <Flex width="100%">
-              <Text color="text" fontSize="16px" marginBottom="40px">
-                To
-                <Dropdown
-                position="top-right"
-                target={
-                  <Input
-                  // disabled
-                  // value={collection}
-                  type="DropdownItem"
-                  style={{ marginRight: '76px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
-                  placeholder={t('Select Network')}
-                  // readOnly
-                  />
-                }
-              >
-                <Button fullWidth variant="text">
-                  <Text>
-                  <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }}/> TRX Network
-                </Text>
-                </Button>
-                <Button fullWidth variant="text">
-                <Text><img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }}/> Poly Network</Text>
-                </Button>
-                <Button fullWidth variant="text">
-                <Text><img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }}/> Binance Smart Chain</Text>
-                </Button>
-                  {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
-              </Dropdown>
-               
+                <Text color="text" fontSize="16px" marginBottom="40px">
+                  To
+                  <Dropdown
+                    position="top-right"
+                    target={
+                      <Input
+                        // disabled
+                        // value={collection}
+                        type="DropdownItem"
+                        style={{ marginRight: '76px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                        placeholder={t('Select Network')}
+                      // readOnly
+                      />
+                    }
+                  >
+                    <Button fullWidth variant="text">
+                      <Text>
+                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> TRX Network
+                      </Text>
+                    </Button>
+                    <Button fullWidth variant="text">
+                      <Text><img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> Poly Network</Text>
+                    </Button>
+                    <Button fullWidth variant="text">
+                      <Text><img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> Binance Smart Chain</Text>
+                    </Button>
+                    {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
+                  </Dropdown>
+
                 </Text>
               </Flex>
 
             </Flex>
             <Text style={{ marginTop: '-6vh', marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
-If you have not added Binance Smart Chain network in your MetaMask yet, 
-please click <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue</Text>
+              If you have not added Binance Smart Chain network in your MetaMask yet,
+              please click <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue</Text>
 
-          <Text color="text" fontSize="16px" marginBottom="40px">
-            Amount
-            <Flex>
-              <Input
-                type="Number"
-                // disabled
-                // value={collection}
-                // maxLength={158}
-                style={{ marginTop: '15px', width: '100%', height: '50px', borderRadius: '6px', backgroundColor: theme.colors.background }}
-                placeholder={t('Enter amount here')}
-              />
-            </Flex>
+            <Text color="text" fontSize="16px" marginBottom="40px">
+              Amount
+              <Flex>
+                <Input
+                  type="Number"
+                  // disabled
+                  // value={collection}
+                  // maxLength={158}
+                  style={{ marginTop: '15px', width: '100%', height: '50px', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                  placeholder={t('Enter amount here')}
+                />
+              </Flex>
               <Text style={{ fontSize: '14px', marginTop: '2vh' }}>
-                You will receive = <img src="/t_token.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }}/> 0 USDT <Button style={{ verticalAlign: 'middle', height: '10%', width: '7%', fontSize: '14px', borderRadius: '4px', cursor: 'none' }}> BEP20</Button>
-                
+                You will receive = <img src="/t_token.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> 0 USDT <Button style={{ verticalAlign: 'middle', height: '10%', width: '7%', fontSize: '14px', borderRadius: '4px', cursor: 'none' }}> BEP20</Button>
+
               </Text>
-          </Text>
-          {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
+            </Text>
+            {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
 
           </Text>
         </Flex>
-        
-        
+
+
       </Flex>
-      
-      
-       </StyledContainer> 
-       
-    
+
+
+    </StyledContainer>
+
+
   )
 }
 
