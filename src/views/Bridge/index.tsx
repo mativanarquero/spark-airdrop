@@ -387,7 +387,7 @@ const Pools: React.FC = () => {
                 />
               </Flex>
               <Text style={{ fontSize: '14px', marginTop: '2vh' }}>
-                You will receive = <img src="/t_token.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> 0 USDT <Button style={{ verticalAlign: 'middle', height: '10%', width: '7%', fontSize: '14px', borderRadius: '4px', cursor: 'none' }}> BEP20</Button>
+                You will receive = <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0 SRK <Button style={{ verticalAlign: 'middle', height: '10%', width: '7%', fontSize: '14px', borderRadius: '4px', cursor: 'none' }}> BEP20</Button>
 
               </Text>
             </Text>
