@@ -4,11 +4,20 @@ import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import { Text, Input, ChevronRightIcon, ChevronDownIcon, Dropdown, Button, ChevronUpIcon, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
-import { ChevronDown, ChevronUp, ChevronRight } from 'react-feather';
+import {
+  Text,
+  Input,
+  ChevronRightIcon,
+  ChevronDownIcon,
+  Dropdown,
+  Button,
+  ChevronUpIcon,
+  ArrowForwardIcon,
+} from '@sparkpointio/sparkswap-uikit'
+import { ChevronDown, ChevronUp, ChevronRight } from 'react-feather'
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@material-ui/core'
 import { useTranslation } from 'contexts/Localization'
 import usePersistState from 'hooks/usePersistState'
 import { usePools, useFetchCakeVault, useFetchPublicPoolsData, usePollFarmsData, useCakeVault } from 'state/hooks'
@@ -20,7 +29,7 @@ import { StyledHr } from 'views/Farms/components/Divider'
 import SearchInput from 'components/SearchInput'
 import Select, { OptionProps } from 'components/Select/Select'
 import { Pool } from 'state/types'
-import useMedia from 'use-media';
+import useMedia from 'use-media'
 import UnlockButton from 'components/UnlockButton'
 import PoolCard from './components/PoolCard'
 import CakeVaultCard from './components/CakeVaultCard'
@@ -30,9 +39,8 @@ import HelpButton from './components/HelpButton'
 import PoolsTable from './components/PoolsTable/PoolsTable'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import { getAprData, getCakeVaultEarnings } from './helpers'
-import { ReactComponent as PoolsDarkLogo } from './components/assets/pool-dark.svg';
-import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg';
-
+import { ReactComponent as PoolsDarkLogo } from './components/assets/pool-dark.svg'
+import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg'
 
 const CardLayout = styled(FlexLayout)`
   justify-content: flex-start;
@@ -90,11 +98,10 @@ export const StyledLink = styled.a`
   }
 `
 
-
 const NUMBER_OF_POOLS_VISIBLE = 12
 
 const Pools: React.FC = () => {
-  const theme = useContext(ThemeContext);
+  const theme = useContext(ThemeContext)
   const location = useLocation()
   const { t } = useTranslation()
   const { account } = useWeb3React()
@@ -200,12 +207,12 @@ const Pools: React.FC = () => {
             }
             return pool.isAutoVault
               ? getCakeVaultEarnings(
-                account,
-                cakeAtLastUserAction,
-                userShares,
-                pricePerFullShare,
-                pool.earningTokenPrice,
-              ).autoUsdToDisplay
+                  account,
+                  cakeAtLastUserAction,
+                  userShares,
+                  pricePerFullShare,
+                  pool.earningTokenPrice,
+                ).autoUsdToDisplay
               : pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
           },
           'desc',
@@ -225,8 +232,7 @@ const Pools: React.FC = () => {
     let chosenPools = []
     if (showUpcomingPools) {
       chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools // TODO: @koji @mat-ivan Please apply here how to filter upcoming pools
-    }
-    else if (showFinishedPools) {
+    } else if (showFinishedPools) {
       chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools
     } else {
       chosenPools = stakedOnly ? stakedOnlyOpenPools : openPools
@@ -258,28 +264,36 @@ const Pools: React.FC = () => {
   const { path, url, isExact } = useRouteMatch()
   const [activeSelect, setActiveSelect] = useState(false)
 
-
   return (
-
-    <StyledContainer style={isStandard ? { marginLeft: '18vw', marginRight: '18vw' } : { marginLeft: '28vw', marginRight: '28vw' }}>
+    <StyledContainer
+      style={isStandard ? { marginLeft: '18vw', marginRight: '18vw' } : { marginLeft: '28vw', marginRight: '28vw' }}
+    >
       <Flex>
-
         <Flex>
           <Text color="text" fontSize="16px" marginBottom="40px">
             Asset
-            <Flex
-              onMouseEnter={() => setActiveSelect(true)}
-              onMouseLeave={() => setActiveSelect(false)}>
+            <Flex onMouseEnter={() => setActiveSelect(true)} onMouseLeave={() => setActiveSelect(false)}>
               <Dropdown
                 position="top-right"
                 target={
                   <Button
                     // type="DropdownItem"
-                    style={{ columnGap: '540px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
-                  // placeholder={t('Select asset')}
-                  // readOnly
+                    style={{
+                      columnGap: '540px',
+                      justifyContent: 'space-around',
+                      marginTop: '15px',
+                      width: '100%',
+                      height: '50px',
+                      cursor: 'pointer',
+                      borderRadius: '6px',
+                      backgroundColor: theme.colors.background,
+                    }}
+                    // placeholder={t('Select asset')}
+                    // readOnly
                   >
-                    <Text color="textSubtle" style={{ alignContent: 'flex-start' }} >Select asset</Text>
+                    <Text color="textSubtle" style={{ alignContent: 'flex-start' }}>
+                      Select asset
+                    </Text>
                     <Text style={{ height: '25px' }}> {activeSelect ? <ChevronUp /> : <ChevronRight />}</Text>
                   </Button>
                 }
@@ -291,14 +305,18 @@ const Pools: React.FC = () => {
                   </Text>
                 </Button>
                 <Button fullWidth variant="text">
-                  <Text> <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> SRKb</Text>
+                  <Text>
+                    {' '}
+                    <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> SRKb
+                  </Text>
                 </Button>
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
               </Dropdown>
             </Flex>
-
-
-            <Flex flexDirection="row" style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
+            <Flex
+              flexDirection="row"
+              style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
+            >
               <Flex style={{ width: '100%' }}>
                 <Text color="text" fontSize="16px" marginBottom="40px">
                   From
@@ -310,7 +328,14 @@ const Pools: React.FC = () => {
                         // disabled
                         // value={collection}
                         type="DropdownItem"
-                        style={{ marginRight: '76px', marginTop: '15px', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                        style={{
+                          marginRight: '76px',
+                          marginTop: '15px',
+                          height: '50px',
+                          cursor: 'pointer',
+                          borderRadius: '6px',
+                          backgroundColor: theme.colors.background,
+                        }}
                         placeholder={t('Select Network')}
                         readOnly
                       />
@@ -318,14 +343,22 @@ const Pools: React.FC = () => {
                   >
                     <Button fullWidth variant="text">
                       <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> TRX Network
+                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> TRX
+                        Network
                       </Text>
                     </Button>
                     <Button fullWidth variant="text">
-                      <Text><img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> Poly Network</Text>
+                      <Text>
+                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> Poly
+                        Network
+                      </Text>
                     </Button>
                     <Button fullWidth variant="text">
-                      <Text> <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> Binance Smart Chain</Text>
+                      <Text>
+                        {' '}
+                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />{' '}
+                        Binance Smart Chain
+                      </Text>
                     </Button>
                     {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
                   </Dropdown>
@@ -333,7 +366,29 @@ const Pools: React.FC = () => {
               </Flex>
 
               <Flex style={{ justifyContent: 'center' }}>
-                <ArrowForwardIcon style={isStandard ? { backgroundColor: theme.colors.primary, marginTop: '39px', marginBottom: '40px', width: '7vh', height: '8.5vh', borderRadius: '4px', padding: '8px' } : { backgroundColor: theme.colors.primary, marginTop: '38px', marginBottom: '40px', width: '5vh', height: '4.8vh', borderRadius: '6px', padding: '8px' }} />
+                <ArrowForwardIcon
+                  style={
+                    isStandard
+                      ? {
+                          backgroundColor: theme.colors.primary,
+                          marginTop: '39px',
+                          marginBottom: '40px',
+                          width: '7vh',
+                          height: '8.5vh',
+                          borderRadius: '4px',
+                          padding: '8px',
+                        }
+                      : {
+                          backgroundColor: theme.colors.primary,
+                          marginTop: '38px',
+                          marginBottom: '40px',
+                          width: '5vh',
+                          height: '4.8vh',
+                          borderRadius: '6px',
+                          padding: '8px',
+                        }
+                  }
+                />
               </Flex>
 
               <Flex width="100%">
@@ -346,34 +401,48 @@ const Pools: React.FC = () => {
                         // disabled
                         // value={collection}
                         type="DropdownItem"
-                        style={{ marginRight: '76px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                        style={{
+                          marginRight: '76px',
+                          justifyContent: 'space-around',
+                          marginTop: '15px',
+                          width: '100%',
+                          height: '50px',
+                          cursor: 'pointer',
+                          borderRadius: '6px',
+                          backgroundColor: theme.colors.background,
+                        }}
                         placeholder={t('Select Network')}
-                      // readOnly
+                        // readOnly
                       />
                     }
                   >
                     <Button fullWidth variant="text">
                       <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> TRX Network
+                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> TRX
+                        Network
                       </Text>
                     </Button>
                     <Button fullWidth variant="text">
-                      <Text><img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> Poly Network</Text>
+                      <Text>
+                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> Poly
+                        Network
+                      </Text>
                     </Button>
                     <Button fullWidth variant="text">
-                      <Text><img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> Binance Smart Chain</Text>
+                      <Text>
+                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} />{' '}
+                        Binance Smart Chain
+                      </Text>
                     </Button>
                     {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
                   </Dropdown>
-
                 </Text>
               </Flex>
-
             </Flex>
             <Text style={{ marginTop: '-6vh', marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
-              If you have not added Binance Smart Chain network in your MetaMask yet,
-              please click <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue</Text>
-
+              If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
+              <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
+            </Text>
             <Text color="text" fontSize="16px" marginBottom="40px">
               Amount
               <Flex>
@@ -382,27 +451,40 @@ const Pools: React.FC = () => {
                   // disabled
                   // value={collection}
                   // maxLength={158}
-                  style={{ marginTop: '15px', width: '100%', height: '50px', borderRadius: '6px', backgroundColor: theme.colors.background }}
+                  style={{
+                    marginTop: '15px',
+                    width: '100%',
+                    height: '50px',
+                    borderRadius: '6px',
+                    backgroundColor: theme.colors.background,
+                  }}
                   placeholder={t('Enter amount here')}
                 />
               </Flex>
               <Text style={{ fontSize: '14px', marginTop: '2vh' }}>
-                You will receive = <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0 SRK <Button style={{ verticalAlign: 'middle', height: '10%', width: '7%', fontSize: '14px', borderRadius: '4px', cursor: 'none' }}> BEP20</Button>
-
+                You will receive ={' '}
+                <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0
+                SRK{' '}
+                <Button
+                  style={{
+                    verticalAlign: 'middle',
+                    height: '10%',
+                    width: '7%',
+                    fontSize: '14px',
+                    borderRadius: '4px',
+                    cursor: 'none',
+                  }}
+                >
+                  {' '}
+                  BEP20
+                </Button>
               </Text>
             </Text>
             {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
-
           </Text>
         </Flex>
-
-
       </Flex>
-
-
     </StyledContainer>
-
-
   )
 }
 

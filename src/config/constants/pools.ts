@@ -46,7 +46,7 @@ const pools: PoolConfig[] = [
     sortOrder: 999,
     isFinished: false,
     isComingSoon: false,
-    isAddTokenDisabled: true
+    isAddTokenDisabled: true,
   },
   {
     sousId: 6,
@@ -77,7 +77,7 @@ const pools: PoolConfig[] = [
     sortOrder: 999,
     isFinished: false,
     isComingSoon: false,
-    isAddTokenDisabled: true
+    isAddTokenDisabled: true,
   },
   {
     sousId: 8,
@@ -148,7 +148,7 @@ const pools: PoolConfig[] = [
     tokenPerBlock: '74484953703703703',
     sortOrder: 999,
     isFinished: false,
-  }
+  },
   // Dummy Contract #1
   // {
   //   sousId: 4,

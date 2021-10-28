@@ -86,7 +86,7 @@ const farms: FarmConfig[] = [
     token: tokens.kclp,
     pairToken: tokens.busd,
     quoteToken: tokens.sfuel,
-    isPromoted: 1
+    isPromoted: 1,
   },
   // KCLP - BUSD - KCLP
   {
@@ -121,7 +121,7 @@ const farms: FarmConfig[] = [
     token: tokens.tipsy,
     pairToken: tokens.wbnb,
     quoteToken: tokens.tipsy,
-    isPromoted: 1
+    isPromoted: 1,
   },
   // GZILA - BUSD - SFUEL
   {
@@ -138,9 +138,8 @@ const farms: FarmConfig[] = [
     token: tokens.gzila,
     pairToken: tokens.busd,
     quoteToken: tokens.gzila,
-    isPromoted: 1
+    isPromoted: 1,
   },
-
 ]
 
 export default farms
