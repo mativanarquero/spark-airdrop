@@ -4,7 +4,7 @@ import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import { Text, Input, Button, ArrowForwardIcon   } from '@sparkpointio/sparkswap-uikit'
+import { Text, Input, Button, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -315,7 +315,9 @@ const Pools: React.FC = () => {
               style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
             >
               <FormControl style={{ width: '100%' }} variant="standard">
-                <Text marginBottom="5px" id="network-dropdown">From</Text>
+                <Text marginBottom="5px" id="network-dropdown">
+                  From
+                </Text>
                 <Select labelId="network-dropdown" defaultValue={0} input={<BootstrapInput />}>
                   <MenuItem disabled value={0}>
                     <em>Select Network</em>
@@ -360,10 +362,12 @@ const Pools: React.FC = () => {
                   }
                 />
               </Flex>
-    
+
               <FormControl variant="standard" style={{ width: '100%' }}>
-                <Text marginBottom="5px" id="network-to-id">To</Text>
-                  <Select labelId="network-to-id"  input={<BootstrapInput />} defaultValue={0}>
+                <Text marginBottom="5px" id="network-to-id">
+                  To
+                </Text>
+                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={0}>
                   <MenuItem disabled value={0}>
                     <em>Select Network</em>
                   </MenuItem>
@@ -379,7 +383,7 @@ const Pools: React.FC = () => {
                     <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
                   </MenuItem>
-                  </Select>
+                </Select>
               </FormControl>
             </Flex>
             <Text style={{ marginTop: '-6vh', marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
