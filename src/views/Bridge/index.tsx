@@ -4,23 +4,13 @@ import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import {
-  Text,
-  Input,
-  ChevronRightIcon,
-  ChevronDownIcon,
-  Dropdown,
-  Button,
-  ChevronUpIcon,
-  ArrowForwardIcon,
-} from '@sparkpointio/sparkswap-uikit'
+import { Text, Input, Button, ArrowForwardIcon   } from '@sparkpointio/sparkswap-uikit'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import { styled as MuiStyled } from '@mui/material/styles'
-import { ChevronDown, ChevronUp, ChevronRight } from 'react-feather'
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
 import { SvgIcon } from '@material-ui/core'
@@ -396,7 +386,6 @@ const Pools: React.FC = () => {
               If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
               <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
             </Text>
-
             <Text color="text" fontSize="16px" marginBottom="40px">
               Amount
               <Flex>
