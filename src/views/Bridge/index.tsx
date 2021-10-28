@@ -5,6 +5,12 @@ import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image } from '@pancakeswap/uikit'
 import { Text, Input, ChevronRightIcon, ChevronDownIcon, Dropdown, Button, ChevronUpIcon, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputBase from '@mui/material/InputBase';
+import { styled as MuiStyled } from '@mui/material/styles';
 import { ChevronDown, ChevronUp, ChevronRight } from 'react-feather';
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
@@ -18,7 +24,7 @@ import Page from 'components/layout/Page'
 import PageHeader from 'components/PageHeader'
 import { StyledHr } from 'views/Farms/components/Divider'
 import SearchInput from 'components/SearchInput'
-import Select, { OptionProps } from 'components/Select/Select'
+import { OptionProps } from 'components/Select/Select'
 import { Pool } from 'state/types'
 import useMedia from 'use-media';
 import UnlockButton from 'components/UnlockButton'
@@ -89,6 +95,31 @@ export const StyledLink = styled.a`
     text-decoration: none;
   }
 `
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+  'label + &': {
+    marginTop: '10px',
+  },
+  '& .MuiInputBase-input': {
+    borderRadius: 4,
+    position: 'relative',
+    backgroundColor: theme.isDark? '#000C1A' : '#EFEFFF',
+    border: 'none',
+    fontSize: 16,
+    padding: '10px 26px 10px 12px',
+    // transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderRadius: 4,
+      borderColor: '#80bdff',
+      backgroundColor: theme.isDark? '#000C1A' : '#EFEFFF',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      color: 'white',
+    }
+  },
+  '*': {
+    color: theme.isDark? '#EFEFFF' : '#000C1A',
+  }
+}));
+
 
 
 const NUMBER_OF_POOLS_VISIBLE = 12
@@ -265,37 +296,30 @@ const Pools: React.FC = () => {
       <Flex>
 
         <Flex>
-          <Text color="text" fontSize="16px" marginBottom="40px">
-            Asset
-            <Flex
-              onMouseEnter={() => setActiveSelect(true)}
-              onMouseLeave={() => setActiveSelect(false)}>
-              <Dropdown
-                position="top-right"
-                target={
-                  <Button
-                    // type="DropdownItem"
-                    style={{ columnGap: '540px', justifyContent: 'space-around', marginTop: '15px', width: '100%', height: '50px', cursor: 'pointer', borderRadius: '6px', backgroundColor: theme.colors.background }}
-                  // placeholder={t('Select asset')}
-                  // readOnly
-                  >
-                    <Text color="textSubtle" style={{ alignContent: 'flex-start' }} >Select asset</Text>
-                    <Text style={{ height: '25px' }}> {activeSelect ? <ChevronUp /> : <ChevronRight />}</Text>
-                  </Button>
-                }
+          <Flex flexDirection="column">
+            <Text marginBottom="5px">Asset</Text>
+            <FormControl variant="standard">
+            {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
+              <Select
+                labelId="asset-dropdown"
+                defaultValue={0}
+                input={<BootstrapInput />}
               >
                 {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
-                <Button fullWidth variant="text" defaultValue="setActiveSelect">
+                <MenuItem disabled value={0}>
+                <em>Select Asset</em>
+                </MenuItem>
+                <MenuItem value={1} divider>
                   <Text>
                     <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> USDT
                   </Text>
-                </Button>
-                <Button fullWidth variant="text">
+                </MenuItem>
+                <MenuItem value={2}  divider>
                   <Text> <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> SRKb</Text>
-                </Button>
+                </MenuItem>
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
-              </Dropdown>
-            </Flex>
+              </Select>
+            </FormControl>
 
 
             <Flex flexDirection="row" style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
@@ -392,8 +416,7 @@ const Pools: React.FC = () => {
               </Text>
             </Text>
             {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
-
-          </Text>
+          </Flex>
         </Flex>
 
 
