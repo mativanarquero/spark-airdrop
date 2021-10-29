@@ -4,17 +4,13 @@ import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import {
-  Text,
-  Input,
-  ChevronRightIcon,
-  ChevronDownIcon,
-  Dropdown,
-  Button,
-  ChevronUpIcon,
-  ArrowForwardIcon,
-} from '@sparkpointio/sparkswap-uikit'
-import { ChevronDown, ChevronUp, ChevronRight } from 'react-feather'
+import { Text, Input, Button, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import InputBase from '@mui/material/InputBase'
+import { styled as MuiStyled } from '@mui/material/styles'
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
 import { SvgIcon } from '@material-ui/core'
@@ -27,7 +23,7 @@ import Page from 'components/layout/Page'
 import PageHeader from 'components/PageHeader'
 import { StyledHr } from 'views/Farms/components/Divider'
 import SearchInput from 'components/SearchInput'
-import Select, { OptionProps } from 'components/Select/Select'
+import { OptionProps } from 'components/Select/Select'
 import { Pool } from 'state/types'
 import useMedia from 'use-media'
 import UnlockButton from 'components/UnlockButton'
@@ -97,6 +93,31 @@ export const StyledLink = styled.a`
     text-decoration: none;
   }
 `
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+  'label + &': {
+    marginTop: '10px',
+  },
+  '& .MuiInputBase-input': {
+    borderRadius: 4,
+    position: 'relative',
+    backgroundColor: theme.isDark ? '#000C1A' : '#EFEFFF',
+    border: 'none',
+    fontSize: 16,
+    padding: '10px 26px 10px 12px',
+    color: 'white',
+    // transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderRadius: 4,
+      borderColor: '#80bdff',
+      backgroundColor: theme.isDark ? '#000C1A' : '#EFEFFF',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      color: 'white',
+    },
+  },
+  '*': {
+    color: theme.isDark ? '#EFEFFF' : '#000C1A',
+  },
+}))
 
 const NUMBER_OF_POOLS_VISIBLE = 12
 
@@ -270,100 +291,51 @@ const Pools: React.FC = () => {
     >
       <Flex>
         <Flex>
-          <Text color="text" fontSize="16px" marginBottom="40px">
-            Asset
-            <Flex onMouseEnter={() => setActiveSelect(true)} onMouseLeave={() => setActiveSelect(false)}>
-              <Dropdown
-                position="top-right"
-                target={
-                  <Button
-                    // type="DropdownItem"
-                    style={{
-                      columnGap: '540px',
-                      justifyContent: 'space-around',
-                      marginTop: '15px',
-                      width: '100%',
-                      height: '50px',
-                      cursor: 'pointer',
-                      borderRadius: '6px',
-                      backgroundColor: theme.colors.background,
-                    }}
-                    // placeholder={t('Select asset')}
-                    // readOnly
-                  >
-                    <Text color="textSubtle" style={{ alignContent: 'flex-start' }}>
-                      Select asset
-                    </Text>
-                    <Text style={{ height: '25px' }}> {activeSelect ? <ChevronUp /> : <ChevronRight />}</Text>
-                  </Button>
-                }
-              >
+          <Flex flexDirection="column">
+            <Text marginBottom="5px">Asset</Text>
+            <FormControl variant="standard">
+              {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
+              <Select labelId="asset-dropdown" defaultValue={0} input={<BootstrapInput />}>
                 {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
-                <Button fullWidth variant="text" defaultValue="setActiveSelect">
-                  <Text>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> USDT
-                  </Text>
-                </Button>
-                <Button fullWidth variant="text">
-                  <Text>
-                    {' '}
-                    <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> SRKb
-                  </Text>
-                </Button>
+                <MenuItem disabled value={0}>
+                  <em>Select Asset</em>
+                </MenuItem>
+                <MenuItem value={1} divider>
+                  <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp; USDT
+                </MenuItem>
+                <MenuItem value={2} divider>
+                  <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
+                </MenuItem>
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
-              </Dropdown>
-            </Flex>
+              </Select>
+            </FormControl>
+
             <Flex
               flexDirection="row"
               style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
             >
-              <Flex style={{ width: '100%' }}>
-                <Text color="text" fontSize="16px" marginBottom="40px">
+              <FormControl style={{ width: '100%' }} variant="standard">
+                <Text marginBottom="5px" id="network-dropdown">
                   From
-                  <Dropdown
-                    position="top-right"
-                    target={
-                      <Input
-                        // fullWidth
-                        // disabled
-                        // value={collection}
-                        type="DropdownItem"
-                        style={{
-                          marginRight: '76px',
-                          marginTop: '15px',
-                          height: '50px',
-                          cursor: 'pointer',
-                          borderRadius: '6px',
-                          backgroundColor: theme.colors.background,
-                        }}
-                        placeholder={t('Select Network')}
-                        readOnly
-                      />
-                    }
-                  >
-                    <Button fullWidth variant="text">
-                      <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> TRX
-                        Network
-                      </Text>
-                    </Button>
-                    <Button fullWidth variant="text">
-                      <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> Poly
-                        Network
-                      </Text>
-                    </Button>
-                    <Button fullWidth variant="text">
-                      <Text>
-                        {' '}
-                        <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />{' '}
-                        Binance Smart Chain
-                      </Text>
-                    </Button>
-                    {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
-                  </Dropdown>
                 </Text>
-              </Flex>
+                <Select labelId="network-dropdown" defaultValue={0} input={<BootstrapInput />}>
+                  <MenuItem disabled value={0}>
+                    <em>Select Network</em>
+                  </MenuItem>
+                  <MenuItem value={1} divider>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp;TRX Network
+                  </MenuItem>
+                  <MenuItem value={2}>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Poly Network
+                  </MenuItem>
+                  <MenuItem value={3}>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Binance Smart Chain
+                  </MenuItem>
+                </Select>
+              </FormControl>
 
               <Flex style={{ justifyContent: 'center' }}>
                 <ArrowForwardIcon
@@ -391,53 +363,28 @@ const Pools: React.FC = () => {
                 />
               </Flex>
 
-              <Flex width="100%">
-                <Text color="text" fontSize="16px" marginBottom="40px">
+              <FormControl variant="standard" style={{ width: '100%' }}>
+                <Text marginBottom="5px" id="network-to-id">
                   To
-                  <Dropdown
-                    position="top-right"
-                    target={
-                      <Input
-                        // disabled
-                        // value={collection}
-                        type="DropdownItem"
-                        style={{
-                          marginRight: '76px',
-                          justifyContent: 'space-around',
-                          marginTop: '15px',
-                          width: '100%',
-                          height: '50px',
-                          cursor: 'pointer',
-                          borderRadius: '6px',
-                          backgroundColor: theme.colors.background,
-                        }}
-                        placeholder={t('Select Network')}
-                        // readOnly
-                      />
-                    }
-                  >
-                    <Button fullWidth variant="text">
-                      <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> TRX
-                        Network
-                      </Text>
-                    </Button>
-                    <Button fullWidth variant="text">
-                      <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} /> Poly
-                        Network
-                      </Text>
-                    </Button>
-                    <Button fullWidth variant="text">
-                      <Text>
-                        <img src="/t_token.png" alt="LogoIcon" width="16px" style={{ verticalAlign: 'middle' }} />{' '}
-                        Binance Smart Chain
-                      </Text>
-                    </Button>
-                    {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
-                  </Dropdown>
                 </Text>
-              </Flex>
+                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={0}>
+                  <MenuItem disabled value={0}>
+                    <em>Select Network</em>
+                  </MenuItem>
+                  <MenuItem value={1} divider>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp;TRX Network
+                  </MenuItem>
+                  <MenuItem value={2}>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Poly Network
+                  </MenuItem>
+                  <MenuItem value={3}>
+                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Binance Smart Chain
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </Flex>
             <Text style={{ marginTop: '-6vh', marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
               If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
@@ -481,7 +428,7 @@ const Pools: React.FC = () => {
               </Text>
             </Text>
             {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
-          </Text>
+          </Flex>
         </Flex>
       </Flex>
     </StyledContainer>
