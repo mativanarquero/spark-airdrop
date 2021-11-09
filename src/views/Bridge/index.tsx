@@ -401,9 +401,10 @@ const Pools: React.FC = () => {
                   style={{
                     marginTop: '15px',
                     width: '100%',
-                    height: '50px',
+                    height: '100px',
                     borderRadius: '6px',
                     backgroundColor: theme.colors.background,
+                    fontSize: '32px'
                   }}
                   placeholder={t('Enter amount here')}
                 />
