@@ -292,7 +292,7 @@ const Pools: React.FC = () => {
       <Flex>
         <Flex>
           <Flex flexDirection="column">
-            <Text marginBottom="5px">Asset</Text>
+            <Text marginBottom="5px" marginTop="5px">Asset</Text>
             <FormControl variant="standard">
               {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
               <Select labelId="asset-dropdown" defaultValue={0} input={<BootstrapInput />}>
@@ -343,19 +343,19 @@ const Pools: React.FC = () => {
                     isStandard
                       ? {
                           backgroundColor: theme.colors.primary,
-                          marginTop: '39px',
+                          marginTop: '30px',
                           marginBottom: '40px',
                           width: '7vh',
-                          height: '8.5vh',
+                          height: '5.5vh',
                           borderRadius: '4px',
                           padding: '8px',
                         }
                       : {
                           backgroundColor: theme.colors.primary,
-                          marginTop: '38px',
+                          marginTop: '30px',
                           marginBottom: '40px',
                           width: '5vh',
-                          height: '4.8vh',
+                          height: '4.5vh',
                           borderRadius: '6px',
                           padding: '8px',
                         }
@@ -428,7 +428,7 @@ const Pools: React.FC = () => {
                 </Button>
               </Text>
             </Text>
-            {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
+            {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
           </Flex>
         </Flex>
       </Flex>
