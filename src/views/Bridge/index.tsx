@@ -292,7 +292,9 @@ const Pools: React.FC = () => {
       <Flex>
         <Flex>
           <Flex flexDirection="column">
-            <Text marginBottom="5px" marginTop="5px">Asset</Text>
+            <Text marginBottom="5px" marginTop="5px">
+              Asset
+            </Text>
             <FormControl variant="standard">
               {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
               <Select labelId="asset-dropdown" defaultValue={0} input={<BootstrapInput />}>
@@ -404,7 +406,7 @@ const Pools: React.FC = () => {
                     height: '100px',
                     borderRadius: '6px',
                     backgroundColor: theme.colors.background,
-                    fontSize: '32px'
+                    fontSize: '32px',
                   }}
                   placeholder={t('Enter amount here')}
                 />
