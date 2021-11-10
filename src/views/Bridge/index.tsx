@@ -312,10 +312,7 @@ const Pools: React.FC = () => {
               </Select>
             </FormControl>
 
-            <Flex
-              flexDirection="row"
-              style={{ marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
-            >
+            <Flex flexDirection="row" style={{ marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
               <FormControl style={{ width: '100%' }} variant="standard">
                 <Text marginBottom="5px" id="network-dropdown">
                   From
@@ -412,7 +409,7 @@ const Pools: React.FC = () => {
                 />
               </Flex>
               <Text mt="5px" style={{ color: 'red', fontSize: '14px' }}>
-              Minimum bridgeable amount is 50,000 SRKb
+                Minimum bridgeable amount is 50,000 SRKb
               </Text>
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
                 Available: 0 SRKb
