@@ -314,7 +314,7 @@ const Pools: React.FC = () => {
 
             <Flex
               flexDirection="row"
-              style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
+              style={{ marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
             >
               <FormControl style={{ width: '100%' }} variant="standard">
                 <Text marginBottom="5px" id="network-dropdown">
@@ -388,7 +388,7 @@ const Pools: React.FC = () => {
                 </Select>
               </FormControl>
             </Flex>
-            <Text style={{ marginTop: '-6vh', marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
+            <Text style={{ marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
               If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
               <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
             </Text>
@@ -411,7 +411,13 @@ const Pools: React.FC = () => {
                   placeholder={t('Enter amount here')}
                 />
               </Flex>
-              <Text style={{ fontSize: '14px', marginTop: '2vh' }}>
+              <Text mt="5px" style={{ color: 'red', fontSize: '14px' }}>
+              Minimum bridgeable amount is 50,000 SRKb
+              </Text>
+              <Text color="textSubtle" style={{ fontSize: '14px' }}>
+                Available: 0 SRKb
+              </Text>
+              <Text mt="30px" style={{ fontSize: '14px' }}>
                 You will receive ={' '}
                 <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0
                 SRK{' '}
