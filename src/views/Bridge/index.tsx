@@ -137,6 +137,8 @@ const Pools: React.FC = () => {
   const isMobile = useMedia({ maxWidth: 500 })
   const isStandard = useMedia({ maxWidth: 1366 })
   const isDesktop = useMedia({ maxWidth: 1920 })
+  const [availBalance, setAvailBalance] = useState(0)
+
   const {
     userData: { cakeAtLastUserAction, userShares },
     fees: { performanceFee },
@@ -425,7 +427,7 @@ const Pools: React.FC = () => {
                 Minimum bridgeable amount is 50,000 {bridgeSymbol}
               </Text>
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
-                Available: 0 SRKb
+                Available: {availBalance} {bridgeSymbol}
               </Text>
               <Text mt="30px" style={{ fontSize: '14px' }}>
                 You will receive ={' '}
