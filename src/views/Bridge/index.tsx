@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
+import ModalInput from 'components/ModalInput'
 import { styled as MuiStyled } from '@mui/material/styles'
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
@@ -138,6 +139,7 @@ const Pools: React.FC = () => {
   const isStandard = useMedia({ maxWidth: 1366 })
   const isDesktop = useMedia({ maxWidth: 1920 })
   const [availBalance, setAvailBalance] = useState(0)
+  const [bridgeAmount, setBridgeAmount] = useState('')
 
   const {
     userData: { cakeAtLastUserAction, userShares },
@@ -220,6 +222,11 @@ const Pools: React.FC = () => {
 
   const handleSortOptionChange = (option: OptionProps): void => {
     setSortOption(option.value)
+  }
+
+  // Prepare function to handle bridge amount input
+  const handleAmountInputChange = (input: string) => {
+    setBridgeAmount(input)
   }
 
   const sortPools = (poolsToSort: Pool[]) => {
@@ -407,7 +414,7 @@ const Pools: React.FC = () => {
             <Text color="text" fontSize="16px" marginBottom="40px">
               Amount
               <Flex>
-                <Input
+                {/* <Input
                   type="Number"
                   // disabled
                   // value={collection}
@@ -421,6 +428,14 @@ const Pools: React.FC = () => {
                     fontSize: '32px',
                   }}
                   placeholder={t('Enter amount here')}
+                /> */}
+                <ModalInput
+                  value={bridgeAmount}
+                  // onSelectMax={() => { handleMaxFunctionHere() }}
+                  onChange={e => handleAmountInputChange(e.currentTarget.value)}
+                  max=''
+                  symbol={bridgeSymbol}
+                  addLiquidityUrl=''
                 />
               </Flex>
               <Text mt="5px" style={{ color: 'red', fontSize: '14px' }}>
