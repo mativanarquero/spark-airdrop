@@ -92,7 +92,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
   // }
 
   return (
-    <div style={{ position: 'relative', margin: '15px 0px', width: '100%' }}>
+    <div style={{ position: 'relative', margin: '10px 0px', width: '100%' }}>
       <StyledTokenInput isWarning={isBalanceZero}>
         {/* <Flex justifyContent="space-between" pl="16px">
           <Text fontSize="14px">{inputTitle}</Text>

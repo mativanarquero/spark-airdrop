@@ -438,7 +438,7 @@ const Pools: React.FC = () => {
                   addLiquidityUrl=""
                 />
               </Flex>
-              <Text mt="5px" style={{ color: 'red', fontSize: '14px' }}>
+              <Text style={{ color: 'red', fontSize: '14px' }}>
                 Minimum bridgeable amount is 50,000 {bridgeSymbol}
               </Text>
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
