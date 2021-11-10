@@ -432,10 +432,10 @@ const Pools: React.FC = () => {
                 <ModalInput
                   value={bridgeAmount}
                   // onSelectMax={() => { handleMaxFunctionHere() }}
-                  onChange={e => handleAmountInputChange(e.currentTarget.value)}
-                  max=''
+                  onChange={(e) => handleAmountInputChange(e.currentTarget.value)}
+                  max=""
                   symbol={bridgeSymbol}
-                  addLiquidityUrl=''
+                  addLiquidityUrl=""
                 />
               </Flex>
               <Text mt="5px" style={{ color: 'red', fontSize: '14px' }}>
