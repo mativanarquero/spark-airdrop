@@ -146,6 +146,9 @@ const Pools: React.FC = () => {
   const accountHasVaultShares = userShares && userShares.gt(0)
   const performanceFeeAsDecimal = performanceFee && performanceFee / 100
 
+  // Set default bridge network - from BSC to ETH
+  const [toBSC, setToBSC] = useState(false)
+
   const pools = useMemo(() => {
     const cakePool = poolsWithoutAutoVault.find((pool) => pool.sousId === 0)
     const cakeAutoVault = { ...cakePool, isAutoVault: true }
@@ -198,6 +201,13 @@ const Pools: React.FC = () => {
   //     setObserverIsSet(true)
   //   }
   // }, [observerIsSet])
+
+  // Prepare hook to set Bridge Network
+  useEffect(() => {
+    if (toBSC) {
+      setToBSC(true)
+    }
+  }, [toBSC])
 
   const showFinishedPools = location.pathname.includes('history')
   const showUpcomingPools = location.pathname.includes('upcoming')
@@ -279,6 +289,12 @@ const Pools: React.FC = () => {
         ),
       )}
     </CardLayout>
+  )
+
+  // Bridge symbol is SRKb if bridge network is from BSC to ETH
+  const bridgeSymbol = (
+    toBSC ? 'SRK' :
+    'SRKb' 
   )
 
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
@@ -409,7 +425,7 @@ const Pools: React.FC = () => {
                 />
               </Flex>
               <Text mt="5px" style={{ color: 'red', fontSize: '14px' }}>
-                Minimum bridgeable amount is 50,000 SRKb
+                Minimum bridgeable amount is 50,000 {bridgeSymbol}
               </Text>
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
                 Available: 0 SRKb
