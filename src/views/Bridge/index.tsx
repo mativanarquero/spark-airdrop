@@ -292,10 +292,7 @@ const Pools: React.FC = () => {
   )
 
   // Bridge symbol is SRKb if bridge network is from BSC to ETH
-  const bridgeSymbol = (
-    toBSC ? 'SRK' :
-    'SRKb' 
-  )
+  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
 
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
   const { path, url, isExact } = useRouteMatch()
