@@ -26,12 +26,15 @@ const getBoxShadow = ({ isWarning = false, theme }) => {
 const StyledTokenInput = styled.div<InputProps>`
   display: flex;
   flex-direction: column;
-  background-color: transparent;
+  background-color: ${({ theme }) => theme.colors.background};
   border: 2px solid ${({ theme }) => theme.colors.primary};
   // box-shadow: ${getBoxShadow};
   color: ${({ theme }) => theme.colors.text};
   padding: 8px 16px 8px 0;
   width: 100%;
+  height: 100px;
+  border-radius: 6px;
+  justify-content: center;
 `
 
 const StyledInput = styled(Input)`
@@ -40,6 +43,7 @@ const StyledInput = styled(Input)`
   margin: 0 8px;
   padding: 0 8px;
   background: none;
+  font-size: 32px;
 
   ${({ theme }) => theme.mediaQueries.xs} {
     width: 80px;
@@ -88,7 +92,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
   // }
 
   return (
-    <div style={{ position: 'relative', margin: '15px 0px' }}>
+    <div style={{ position: 'relative', margin: '10px 0px', width: '100%' }}>
       <StyledTokenInput isWarning={isBalanceZero}>
         {/* <Flex justifyContent="space-between" pl="16px">
           <Text fontSize="14px">{inputTitle}</Text>

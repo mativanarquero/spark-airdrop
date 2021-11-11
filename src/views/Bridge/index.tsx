@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
+import ModalInput from 'components/ModalInput'
 import { styled as MuiStyled } from '@mui/material/styles'
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
@@ -137,6 +138,9 @@ const Pools: React.FC = () => {
   const isMobile = useMedia({ maxWidth: 500 })
   const isStandard = useMedia({ maxWidth: 1366 })
   const isDesktop = useMedia({ maxWidth: 1920 })
+  const [availBalance, setAvailBalance] = useState(0)
+  const [bridgeAmount, setBridgeAmount] = useState('')
+
   const {
     userData: { cakeAtLastUserAction, userShares },
     fees: { performanceFee },
@@ -145,6 +149,9 @@ const Pools: React.FC = () => {
   } = useCakeVault()
   const accountHasVaultShares = userShares && userShares.gt(0)
   const performanceFeeAsDecimal = performanceFee && performanceFee / 100
+
+  // Set default bridge network - from BSC to ETH
+  const [toBSC, setToBSC] = useState(false)
 
   const pools = useMemo(() => {
     const cakePool = poolsWithoutAutoVault.find((pool) => pool.sousId === 0)
@@ -199,6 +206,13 @@ const Pools: React.FC = () => {
   //   }
   // }, [observerIsSet])
 
+  // Prepare hook to set Bridge Network
+  useEffect(() => {
+    if (toBSC) {
+      setToBSC(true)
+    }
+  }, [toBSC])
+
   const showFinishedPools = location.pathname.includes('history')
   const showUpcomingPools = location.pathname.includes('upcoming')
 
@@ -208,6 +222,11 @@ const Pools: React.FC = () => {
 
   const handleSortOptionChange = (option: OptionProps): void => {
     setSortOption(option.value)
+  }
+
+  // Prepare function to handle bridge amount input
+  const handleAmountInputChange = (input: string) => {
+    setBridgeAmount(input)
   }
 
   const sortPools = (poolsToSort: Pool[]) => {
@@ -281,6 +300,9 @@ const Pools: React.FC = () => {
     </CardLayout>
   )
 
+  // Bridge symbol is SRKb if bridge network is from BSC to ETH
+  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
+
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
   const { path, url, isExact } = useRouteMatch()
   const [activeSelect, setActiveSelect] = useState(false)
@@ -292,7 +314,9 @@ const Pools: React.FC = () => {
       <Flex>
         <Flex>
           <Flex flexDirection="column">
-            <Text marginBottom="5px">Asset</Text>
+            <Text marginBottom="5px" marginTop="5px">
+              Asset
+            </Text>
             <FormControl variant="standard">
               {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
               <Select labelId="asset-dropdown" defaultValue={0} input={<BootstrapInput />}>
@@ -310,10 +334,7 @@ const Pools: React.FC = () => {
               </Select>
             </FormControl>
 
-            <Flex
-              flexDirection="row"
-              style={{ marginBottom: '40px', marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}
-            >
+            <Flex flexDirection="row" style={{ marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
               <FormControl style={{ width: '100%' }} variant="standard">
                 <Text marginBottom="5px" id="network-dropdown">
                   From
@@ -343,19 +364,19 @@ const Pools: React.FC = () => {
                     isStandard
                       ? {
                           backgroundColor: theme.colors.primary,
-                          marginTop: '39px',
+                          marginTop: '30px',
                           marginBottom: '40px',
                           width: '7vh',
-                          height: '8.5vh',
+                          height: '5.5vh',
                           borderRadius: '4px',
                           padding: '8px',
                         }
                       : {
                           backgroundColor: theme.colors.primary,
-                          marginTop: '38px',
+                          marginTop: '30px',
                           marginBottom: '40px',
                           width: '5vh',
-                          height: '4.8vh',
+                          height: '4.5vh',
                           borderRadius: '6px',
                           padding: '8px',
                         }
@@ -386,14 +407,14 @@ const Pools: React.FC = () => {
                 </Select>
               </FormControl>
             </Flex>
-            <Text style={{ marginTop: '-6vh', marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
+            <Text style={{ marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
               If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
               <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
             </Text>
             <Text color="text" fontSize="16px" marginBottom="40px">
               Amount
               <Flex>
-                <Input
+                {/* <Input
                   type="Number"
                   // disabled
                   // value={collection}
@@ -401,14 +422,27 @@ const Pools: React.FC = () => {
                   style={{
                     marginTop: '15px',
                     width: '100%',
-                    height: '50px',
+                    height: '100px',
                     borderRadius: '6px',
                     backgroundColor: theme.colors.background,
+                    fontSize: '32px',
                   }}
                   placeholder={t('Enter amount here')}
+                /> */}
+                <ModalInput
+                  value={bridgeAmount}
+                  // onSelectMax={() => { handleMaxFunctionHere() }}
+                  onChange={(e) => handleAmountInputChange(e.currentTarget.value)}
+                  max=""
+                  symbol={bridgeSymbol}
+                  addLiquidityUrl=""
                 />
               </Flex>
-              <Text style={{ fontSize: '14px', marginTop: '2vh' }}>
+              <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is 50,000 {bridgeSymbol}</Text>
+              <Text color="textSubtle" style={{ fontSize: '14px' }}>
+                Available: {availBalance} {bridgeSymbol}
+              </Text>
+              <Text mt="30px" style={{ fontSize: '14px' }}>
                 You will receive ={' '}
                 <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0
                 SRK{' '}
@@ -427,7 +461,7 @@ const Pools: React.FC = () => {
                 </Button>
               </Text>
             </Text>
-            {!account ? <UnlockButton mt="40px" mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
+            {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
           </Flex>
         </Flex>
       </Flex>
