@@ -79,7 +79,17 @@ const StyledContainer = styled(Flex)`
     margin: 60px 90px 40px 90px;
   }
   @media (max-width: 500px) {
-    // margin: 40px 90px 40px 90px
+    height: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+  @media (max-width: 375px) {
+    display: flex;
+    justify-content: center;
+    margin-left: 15px;
+    margin-right: 15px;
   }
 `
 
@@ -308,12 +318,10 @@ const Pools: React.FC = () => {
   const [activeSelect, setActiveSelect] = useState(false)
 
   return (
-    <StyledContainer
-      style={isStandard ? { marginLeft: '18vw', marginRight: '18vw' } : { marginLeft: '28vw', marginRight: '28vw' }}
-    >
+    <StyledContainer style={isMobile ? { justifyContent: 'center' } : { marginLeft: '28vw', marginRight: '28vw' }}>
       <Flex>
         <Flex>
-          <Flex flexDirection="column">
+          <Flex flexDirection="column" style={isMobile ? { width: '300px' } : {}}>
             <Text marginBottom="5px" marginTop="5px">
               Asset
             </Text>
@@ -334,7 +342,14 @@ const Pools: React.FC = () => {
               </Select>
             </FormControl>
 
-            <Flex flexDirection="row" style={{ marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
+            <Flex
+              flexDirection="row"
+              style={
+                isMobile
+                  ? { marginTop: '35px', columnGap: '10px' }
+                  : { marginTop: '40px', columnGap: '30px', justifyContent: 'center' }
+              }
+            >
               <FormControl style={{ width: '100%' }} variant="standard">
                 <Text marginBottom="5px" id="network-dropdown">
                   From
