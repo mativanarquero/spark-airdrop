@@ -44,6 +44,7 @@ const StyledInput = styled(Input)`
   padding: 0 8px;
   background: none;
   font-size: 32px;
+  height: 55px;
 
   ${({ theme }) => theme.mediaQueries.xs} {
     width: 80px;
