@@ -85,11 +85,38 @@ const StyledContainer = styled(Flex)`
     margin-left: 25px;
     margin-right: 25px;
   }
-  @media (max-width: 375px) {
+  @media (min-width: 375px) {
     display: flex;
     justify-content: center;
     margin-left: 15px;
     margin-right: 15px;
+  }
+`
+const ArrowContainer = styled(Flex)`
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.primary};
+  margin-top: 30px;
+  margin-bottom: 40px;
+  border-radius: 6px;
+  padding: 8px;
+  width: 100px;
+  height: 4vh;
+  @media (max-width: 1366px) {
+    height: 7vh;
+    width: 100px;
+  }
+  @media (max-width: 500px) {
+    height: 5.6vh;
+    width: 100px;
+  }
+  @media (max-width: 414px) {
+    height: 40px;
+    width: 100px;
+  }
+  @media (max-width: 375px) {
+    height: 40px;
+    width: 100px;
   }
 `
 
@@ -257,12 +284,12 @@ const Pools: React.FC = () => {
             }
             return pool.isAutoVault
               ? getCakeVaultEarnings(
-                  account,
-                  cakeAtLastUserAction,
-                  userShares,
-                  pricePerFullShare,
-                  pool.earningTokenPrice,
-                ).autoUsdToDisplay
+                account,
+                cakeAtLastUserAction,
+                userShares,
+                pricePerFullShare,
+                pool.earningTokenPrice,
+              ).autoUsdToDisplay
               : pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
           },
           'desc',
@@ -373,31 +400,10 @@ const Pools: React.FC = () => {
                 </Select>
               </FormControl>
 
-              <Flex style={{ justifyContent: 'center' }}>
-                <ArrowForwardIcon
-                  style={
-                    isStandard
-                      ? {
-                          backgroundColor: theme.colors.primary,
-                          marginTop: '30px',
-                          marginBottom: '40px',
-                          width: '7vh',
-                          height: '5.5vh',
-                          borderRadius: '4px',
-                          padding: '8px',
-                        }
-                      : {
-                          backgroundColor: theme.colors.primary,
-                          marginTop: '30px',
-                          marginBottom: '40px',
-                          width: '5vh',
-                          height: '4.5vh',
-                          borderRadius: '6px',
-                          padding: '8px',
-                        }
-                  }
-                />
-              </Flex>
+              {/* Switch network button */}
+              <ArrowContainer>
+                <ArrowForwardIcon />
+              </ArrowContainer>
 
               <FormControl variant="standard" style={{ width: '100%' }}>
                 <Text marginBottom="5px" id="network-to-id">
