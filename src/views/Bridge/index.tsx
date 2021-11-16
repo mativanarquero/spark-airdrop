@@ -104,19 +104,15 @@ const ArrowContainer = styled(Flex)`
   height: 4vh;
   @media (max-width: 1366px) {
     height: 7vh;
-    width: 100px;
   }
   @media (max-width: 500px) {
     height: 5.6vh;
-    width: 100px;
   }
   @media (max-width: 414px) {
     height: 40px;
-    width: 100px;
   }
   @media (max-width: 375px) {
     height: 40px;
-    width: 100px;
   }
 `
 
