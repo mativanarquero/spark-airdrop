@@ -173,6 +173,8 @@ const Pools: React.FC = () => {
   const isDesktop = useMedia({ maxWidth: 1920 })
   const [availBalance, setAvailBalance] = useState(0)
   const [bridgeAmount, setBridgeAmount] = useState('')
+  const [receiveTokenAddress, setReceiveTokenAddress] = useState('0xC3440c10c4F36f354eB591B19FafB4906d449B75')
+  const [receiveAmount, setReceiveAmount] = useState(0)
 
   const {
     userData: { cakeAtLastUserAction, userShares },
@@ -334,7 +336,7 @@ const Pools: React.FC = () => {
   )
 
   // Bridge symbol is SRKb if bridge network is from BSC to ETH
-  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
+  const bridgeSymbol = toBSC ? 'SRKb' : 'SRK'
 
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
   const { path, url, isExact } = useRouteMatch()
@@ -461,8 +463,9 @@ const Pools: React.FC = () => {
               </Text>
               <Text mt="30px" style={{ fontSize: '14px' }}>
                 You will receive ={' '}
-                <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0
-                SRK{' '}
+                {/* <img src="srk.png" alt="ReceiveLogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0 */}
+                <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> {receiveAmount}
+                &nbsp;{bridgeSymbol}{' '}
                 <Button
                   style={{
                     verticalAlign: 'middle',
