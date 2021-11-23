@@ -36,8 +36,6 @@ import HelpButton from './components/HelpButton'
 import PoolsTable from './components/PoolsTable/PoolsTable'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import { getAprData, getCakeVaultEarnings } from './helpers'
-import { ReactComponent as ReceiveIconLogo } from './components/assets/srk.svg'
-import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg'
 import srkTokenIcon from './components/assets/srk.png'
 
 const CardLayout = styled(FlexLayout)`
