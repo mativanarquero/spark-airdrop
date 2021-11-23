@@ -79,7 +79,40 @@ const StyledContainer = styled(Flex)`
     margin: 60px 90px 40px 90px;
   }
   @media (max-width: 500px) {
-    // margin: 40px 90px 40px 90px
+    height: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+  @media (min-width: 375px) {
+    display: flex;
+    justify-content: center;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+`
+const ArrowContainer = styled(Flex)`
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.primary};
+  margin-top: 30px;
+  margin-bottom: 40px;
+  border-radius: 6px;
+  padding: 8px;
+  width: 100px;
+  height: 4vh;
+  @media (max-width: 1366px) {
+    height: 7vh;
+  }
+  @media (max-width: 500px) {
+    height: 5.6vh;
+  }
+  @media (max-width: 414px) {
+    height: 40px;
+  }
+  @media (max-width: 375px) {
+    height: 40px;
   }
 `
 
@@ -308,12 +341,10 @@ const Pools: React.FC = () => {
   const [activeSelect, setActiveSelect] = useState(false)
 
   return (
-    <StyledContainer
-      style={isStandard ? { marginLeft: '18vw', marginRight: '18vw' } : { marginLeft: '28vw', marginRight: '28vw' }}
-    >
+    <StyledContainer style={isMobile ? { justifyContent: 'center' } : { marginLeft: '28vw', marginRight: '28vw' }}>
       <Flex>
         <Flex>
-          <Flex flexDirection="column">
+          <Flex flexDirection="column" style={isMobile ? { width: '300px' } : {}}>
             <Text marginBottom="5px" marginTop="5px">
               Asset
             </Text>
@@ -334,7 +365,14 @@ const Pools: React.FC = () => {
               </Select>
             </FormControl>
 
-            <Flex flexDirection="row" style={{ marginTop: '40px', columnGap: '30px', justifyContent: 'center' }}>
+            <Flex
+              flexDirection="row"
+              style={
+                isMobile
+                  ? { marginTop: '35px', columnGap: '10px' }
+                  : { marginTop: '40px', columnGap: '30px', justifyContent: 'center' }
+              }
+            >
               <FormControl style={{ width: '100%' }} variant="standard">
                 <Text marginBottom="5px" id="network-dropdown">
                   From
@@ -358,31 +396,10 @@ const Pools: React.FC = () => {
                 </Select>
               </FormControl>
 
-              <Flex style={{ justifyContent: 'center' }}>
-                <ArrowForwardIcon
-                  style={
-                    isStandard
-                      ? {
-                          backgroundColor: theme.colors.primary,
-                          marginTop: '30px',
-                          marginBottom: '40px',
-                          width: '7vh',
-                          height: '5.5vh',
-                          borderRadius: '4px',
-                          padding: '8px',
-                        }
-                      : {
-                          backgroundColor: theme.colors.primary,
-                          marginTop: '30px',
-                          marginBottom: '40px',
-                          width: '5vh',
-                          height: '4.5vh',
-                          borderRadius: '6px',
-                          padding: '8px',
-                        }
-                  }
-                />
-              </Flex>
+              {/* Switch network button */}
+              <ArrowContainer>
+                <ArrowForwardIcon />
+              </ArrowContainer>
 
               <FormControl variant="standard" style={{ width: '100%' }}>
                 <Text marginBottom="5px" id="network-to-id">
