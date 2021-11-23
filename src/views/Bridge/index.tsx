@@ -3,8 +3,8 @@ import { useLocation, Route, useRouteMatch } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
-import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import { Text, Input, Button, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
+import { Heading, Flex } from '@pancakeswap/uikit'
+import { Text, Input, Button, ArrowForwardIcon, Image } from '@sparkpointio/sparkswap-uikit'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -36,8 +36,9 @@ import HelpButton from './components/HelpButton'
 import PoolsTable from './components/PoolsTable/PoolsTable'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import { getAprData, getCakeVaultEarnings } from './helpers'
-import { ReactComponent as PoolsDarkLogo } from './components/assets/pool-dark.svg'
+import { ReactComponent as ReceiveIconLogo } from './components/assets/srk.svg'
 import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg'
+import srkTokenIcon from './components/assets/srk.png'
 
 const CardLayout = styled(FlexLayout)`
   justify-content: flex-start;
@@ -461,25 +462,28 @@ const Pools: React.FC = () => {
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
                 Available: {availBalance} {bridgeSymbol}
               </Text>
+              <Flex>
               <Text mt="30px" style={{ fontSize: '14px' }}>
                 You will receive ={' '}
-                {/* <img src="srk.png" alt="ReceiveLogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0 */}
-                <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> {receiveAmount}
+                <img src={srkTokenIcon} alt="ReceiveLogoIcon" width="14px" height="14px" style={{ verticalAlign: 'middle', marginBottom: '1px' }} />
+                {' '}{receiveAmount}
                 &nbsp;{bridgeSymbol}{' '}
                 <Button
                   style={{
                     verticalAlign: 'middle',
-                    height: '10%',
+                    height: '14px',
                     width: '7%',
                     fontSize: '14px',
                     borderRadius: '4px',
                     cursor: 'none',
+                    marginBottom: '2.5px'
                   }}
                 >
                   {' '}
                   BEP20
                 </Button>
               </Text>
+              </Flex>
             </Text>
             {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
           </Flex>
