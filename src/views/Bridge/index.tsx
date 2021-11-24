@@ -172,7 +172,6 @@ const Pools: React.FC = () => {
   const isDesktop = useMedia({ maxWidth: 1920 })
   const [availBalance, setAvailBalance] = useState(0)
   const [bridgeAmount, setBridgeAmount] = useState('')
-  const [receiveTokenAddress, setReceiveTokenAddress] = useState('0xC3440c10c4F36f354eB591B19FafB4906d449B75')
   const [receiveAmount, setReceiveAmount] = useState(0)
 
   const {
@@ -334,7 +333,7 @@ const Pools: React.FC = () => {
     </CardLayout>
   )
 
-  // Bridge symbol is SRKb if bridge network is from BSC to ETH
+  // Bridge symbol is SRKb if bridge network is from ETH to BSC
   const bridgeSymbol = toBSC ? 'SRKb' : 'SRK'
 
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
@@ -461,26 +460,32 @@ const Pools: React.FC = () => {
                 Available: {availBalance} {bridgeSymbol}
               </Text>
               <Flex>
-              <Text mt="30px" style={{ fontSize: '14px' }}>
-                You will receive ={' '}
-                <img src={srkTokenIcon} alt="ReceiveLogoIcon" width="14px" height="14px" style={{ verticalAlign: 'middle', marginBottom: '1px' }} />
-                {' '}{receiveAmount}
-                &nbsp;{bridgeSymbol}{' '}
-                <Button
-                  style={{
-                    verticalAlign: 'middle',
-                    height: '14px',
-                    width: '7%',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                    cursor: 'none',
-                    marginBottom: '2.5px'
-                  }}
-                >
-                  {' '}
-                  BEP20
-                </Button>
-              </Text>
+                <Text mt="30px" style={{ fontSize: '14px' }}>
+                  You will receive ={' '}
+                  <img
+                    src={srkTokenIcon}
+                    alt="ReceiveLogoIcon"
+                    width="14px"
+                    height="14px"
+                    style={{ verticalAlign: 'middle', marginBottom: '1px' }}
+                  />{' '}
+                  {receiveAmount}
+                  &nbsp;{bridgeSymbol}{' '}
+                  <Button
+                    style={{
+                      verticalAlign: 'middle',
+                      height: '14px',
+                      width: '7%',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      cursor: 'none',
+                      marginBottom: '2.5px',
+                    }}
+                  >
+                    {' '}
+                    BEP20
+                  </Button>
+                </Text>
               </Flex>
             </Text>
             {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
