@@ -3,8 +3,8 @@ import addresses from 'config/constants/contracts'
 import tokens from 'config/constants/tokens'
 import { Address } from 'config/constants/types'
 
-export const getAddress = (address: Address): string => {
-  const chainId = process.env.REACT_APP_CHAIN_ID
+export const getAddress = (address: Address, chain = null): any => {
+  const chainId = chain ?? process.env.REACT_APP_CHAIN_ID;
   return address[chainId] ? address[chainId] : address[MAINNET_CHAIN_ID]
 }
 

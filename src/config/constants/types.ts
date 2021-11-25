@@ -51,6 +51,13 @@ export enum PoolCategory {
   'AUTO' = 'Auto',
 }
 
+export interface BridgeConfig {
+  name: string,
+  chainID: number,
+  tokens: any,
+  supportedChains: any,
+}
+
 export interface FarmConfig {
   pid: number
   lpSymbol: string

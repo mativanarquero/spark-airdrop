@@ -1,47 +1,23 @@
-import React, { useEffect, useMemo, useRef, useState, useContext } from 'react'
-import { useLocation, Route, useRouteMatch } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
-import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import { Text, Input, Button, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
-import InputLabel from '@mui/material/InputLabel'
+import { Button, Flex } from '@pancakeswap/uikit'
+import { ArrowForwardIcon, Input, Text } from '@sparkpointio/sparkswap-uikit'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
-import ModalInput from 'components/ModalInput'
-import { styled as MuiStyled } from '@mui/material/styles'
-import orderBy from 'lodash/orderBy'
-import partition from 'lodash/partition'
-import { SvgIcon } from '@material-ui/core'
 import { useTranslation } from 'contexts/Localization'
-import usePersistState from 'hooks/usePersistState'
-import { usePools, useFetchCakeVault, useFetchPublicPoolsData, usePollFarmsData, useCakeVault } from 'state/hooks'
-import { latinise } from 'utils/latinise'
-import FlexLayout from 'components/layout/Flex'
-import Page from 'components/layout/Page'
-import PageHeader from 'components/PageHeader'
-import { StyledHr } from 'views/Farms/components/Divider'
-import SearchInput from 'components/SearchInput'
-import { OptionProps } from 'components/Select/Select'
-import { Pool } from 'state/types'
-import useMedia from 'use-media'
 import UnlockButton from 'components/UnlockButton'
-import PoolCard from './components/PoolCard'
-import CakeVaultCard from './components/CakeVaultCard'
-import PoolTabButtons from './components/PoolTabButtons'
-import BountyCard from './components/BountyCard'
-import HelpButton from './components/HelpButton'
-import PoolsTable from './components/PoolsTable/PoolsTable'
-import { ViewMode } from './components/ToggleView/ToggleView'
-import { getAprData, getCakeVaultEarnings } from './helpers'
-import { ReactComponent as PoolsDarkLogo } from './components/assets/pool-dark.svg'
-import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg'
-
-const CardLayout = styled(FlexLayout)`
-  justify-content: flex-start;
-`
+import { useMedia } from 'use-media'
+import tokens from '../../config/constants/tokens'
+import { getAddress } from '../../utils/addressHelpers'
+import { BASE_URL } from '../../config'
+import bridgeTokens from '../../config/constants/bridge/bridgeTokens'
+import bridgeChains from '../../config/constants/bridge/bridgeChains'
+import useTokenBalance from '../../hooks/useTokenBalance'
+import { getBalanceAmount } from '../../utils/formatBalance'
+import ModalInput from '../../components/ModalInput'
 
 const PoolControls = styled(Flex)`
   flex-direction: column;
@@ -155,190 +131,59 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 const NUMBER_OF_POOLS_VISIBLE = 12
 
-const Pools: React.FC = () => {
+const Bridge: React.FC = () => {
   const theme = useContext(ThemeContext)
-  const location = useLocation()
   const { t } = useTranslation()
-  const { account } = useWeb3React()
-  const { pools: poolsWithoutAutoVault, userDataLoaded } = usePools(account)
-  const [stakedOnly, setStakedOnly] = usePersistState(false, { localStorageKey: 'pancake_pool_staked' })
-  const [numberOfPoolsVisible, setNumberOfPoolsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
-  const [observerIsSet, setObserverIsSet] = useState(false)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
-  const [viewMode, setViewMode] = usePersistState(ViewMode.TABLE, { localStorageKey: 'pancake_farm_view' })
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortOption, setSortOption] = useState('hot')
+  const { account, chainId } = useWeb3React()
   const isMobile = useMedia({ maxWidth: 500 })
   const isStandard = useMedia({ maxWidth: 1366 })
   const isDesktop = useMedia({ maxWidth: 1920 })
   const [availBalance, setAvailBalance] = useState(0)
   const [bridgeAmount, setBridgeAmount] = useState('')
-
-  const {
-    userData: { cakeAtLastUserAction, userShares },
-    fees: { performanceFee },
-    pricePerFullShare,
-    totalCakeInVault,
-  } = useCakeVault()
-  const accountHasVaultShares = userShares && userShares.gt(0)
-  const performanceFeeAsDecimal = performanceFee && performanceFee / 100
-
-  // Set default bridge network - from BSC to ETH
   const [toBSC, setToBSC] = useState(false)
+  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
 
-  const pools = useMemo(() => {
-    const cakePool = poolsWithoutAutoVault.find((pool) => pool.sousId === 0)
-    const cakeAutoVault = { ...cakePool, isAutoVault: true }
-    return [...poolsWithoutAutoVault]
-  }, [poolsWithoutAutoVault])
+  const [state, setState] = useState({
+    bridgeTokenAddress: getAddress(tokens.srkb.address),
+    'bridgeTokens': bridgeTokens
+  })
 
-  // TODO aren't arrays in dep array checked just by reference, i.e. it will rerender every time reference changes?
-  const [finishedPools, openPools] = useMemo(() => partition(pools, (pool) => pool.isFinished), [pools])
-  const [upcomingPools, notUpcomingPools] = useMemo(() => partition(pools, (pool) => pool.isComingSoon), [pools])
-  const stakedOnlyFinishedPools = useMemo(
-    () =>
-      finishedPools.filter((pool) => {
-        if (pool.isAutoVault) {
-          return accountHasVaultShares
-        }
-        return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
-      }),
-    [finishedPools, accountHasVaultShares],
-  )
-  const stakedOnlyOpenPools = useMemo(
-    () =>
-      openPools.filter((pool) => {
-        if (pool.isAutoVault) {
-          return accountHasVaultShares
-        }
-        return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
-      }),
-    [openPools, accountHasVaultShares],
-  )
-  const hasStakeInFinishedPools = stakedOnlyFinishedPools.length > 0
-
-  usePollFarmsData()
-  useFetchCakeVault()
-  useFetchPublicPoolsData()
-
-  // useEffect(() => {
-  //   const showMorePools = (entries) => {
-  //     const [entry] = entries
-  //     if (entry.isIntersecting) {
-  //       setNumberOfPoolsVisible((poolsCurrentlyVisible) => poolsCurrentlyVisible + NUMBER_OF_POOLS_VISIBLE)
-  //     }
-  //   }
-
-  //   if (!observerIsSet) {
-  //     const loadMoreObserver = new IntersectionObserver(showMorePools, {
-  //       rootMargin: '0px',
-  //       threshold: 1,
-  //     })
-  //     loadMoreObserver.observe(loadMoreRef.current)
-  //     setObserverIsSet(true)
-  //   }
-  // }, [observerIsSet])
-
-  // Prepare hook to set Bridge Network
   useEffect(() => {
-    if (toBSC) {
-      setToBSC(true)
-    }
-  }, [toBSC])
+    // setState(prevState => ({
+    //   ...prevState,
+    //   bridgeTokenAddress: getAddress(tokens.srkb.address),
+    //   'bridgeTokens': bridgeTokens
+    // }))
+    // _setState('bridgeTokenAddress', getAddress(tokens.srkb.address))
+    _setState('bridgeTokens', bridgeTokens)
+  }, [])
 
-  const showFinishedPools = location.pathname.includes('history')
-  const showUpcomingPools = location.pathname.includes('upcoming')
+  // const { pools: poolsWithoutAutoVault, userDataLoaded } = usePools(account)
 
-  const handleChangeSearchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value)
+  function _setState(name, value) {
+    setState(prevState => ({ ...prevState, [name]: value }))
   }
 
-  const handleSortOptionChange = (option: OptionProps): void => {
-    setSortOption(option.value)
+  function onChange(event) {
+    const { name, value } = event.target
+    _setState(name, value)
   }
 
-  // Prepare function to handle bridge amount input
+  function GetTokenBalance(tokenAddress) {
+    return useTokenBalance(tokenAddress)
+  }
+
   const handleAmountInputChange = (input: string) => {
     setBridgeAmount(input)
   }
 
-  const sortPools = (poolsToSort: Pool[]) => {
-    switch (sortOption) {
-      case 'apr':
-        // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => (pool.apr ? getAprData(pool, performanceFeeAsDecimal).apr : 0),
-          'desc',
-        )
-      case 'earned':
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => {
-            if (!pool.userData || !pool.earningTokenPrice) {
-              return 0
-            }
-            return pool.isAutoVault
-              ? getCakeVaultEarnings(
-                  account,
-                  cakeAtLastUserAction,
-                  userShares,
-                  pricePerFullShare,
-                  pool.earningTokenPrice,
-                ).autoUsdToDisplay
-              : pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
-          },
-          'desc',
-        )
-      case 'totalStaked':
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => (pool.isAutoVault ? totalCakeInVault.toNumber() : pool.totalStaked.toNumber()),
-          'desc',
-        )
-      default:
-        return poolsToSort
-    }
-  }
 
-  const poolsToShow = () => {
-    let chosenPools = []
-    if (showUpcomingPools) {
-      chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools // TODO: @koji @mat-ivan Please apply here how to filter upcoming pools
-    } else if (showFinishedPools) {
-      chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools
-    } else {
-      chosenPools = stakedOnly ? stakedOnlyOpenPools : openPools
-    }
+  // usePollFarmsData()
+  // useFetchCakeVault()
+  // useFetchPublicPoolsData()
 
-    if (searchQuery) {
-      const lowercaseQuery = latinise(searchQuery.toLowerCase())
-      chosenPools = chosenPools.filter((pool) =>
-        latinise(pool.earningToken.symbol.toLowerCase()).includes(lowercaseQuery),
-      )
-    }
-
-    return sortPools(chosenPools).slice(0, numberOfPoolsVisible)
-  }
-
-  const cardLayout = (
-    <CardLayout>
-      {poolsToShow().map((pool) =>
-        pool.isAutoVault ? (
-          <CakeVaultCard key="auto-cake" pool={pool} showStakedOnly={stakedOnly} />
-        ) : (
-          <PoolCard key={pool.sousId} pool={pool} account={account} />
-        ),
-      )}
-    </CardLayout>
-  )
-
-  // Bridge symbol is SRKb if bridge network is from BSC to ETH
-  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
-
-  const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
-  const { path, url, isExact } = useRouteMatch()
-  const [activeSelect, setActiveSelect] = useState(false)
+  const imgUrl = `${BASE_URL}/images/bridge`
+  const tokenImgUrl = `${BASE_URL}/images/tokens`
 
   return (
     <StyledContainer style={isMobile ? { justifyContent: 'center' } : { marginLeft: '28vw', marginRight: '28vw' }}>
@@ -486,4 +331,4 @@ const Pools: React.FC = () => {
   )
 }
 
-export default Pools
+export default Bridge

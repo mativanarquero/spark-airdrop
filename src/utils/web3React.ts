@@ -8,12 +8,15 @@ import getNodeUrl from './getRpcUrl'
 const POLLING_INTERVAL = 12000
 const rpcUrl = getNodeUrl()
 const chainId = parseInt(process.env.REACT_APP_CHAIN_ID, 10)
+const bscTestnet = parseInt('97', 10)
+const ethMain = parseInt('1', 10)
+const ropsten = parseInt('3', 10)
 
-const injected = new InjectedConnector({ supportedChainIds: [chainId] })
+const injected = new InjectedConnector({ supportedChainIds: [chainId, ethMain, ropsten, bscTestnet] })
 
 const walletconnect = new WalletConnectConnector({
   rpc: { [chainId]: rpcUrl },
-  bridge: 'https://pancakeswap.bridge.walletconnect.org/',
+  bridge: 'https://bridge.walletconnect.org/',
   qrcode: true,
   pollingInterval: POLLING_INTERVAL,
 })

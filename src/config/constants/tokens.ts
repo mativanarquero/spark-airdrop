@@ -1599,6 +1599,7 @@ const tokens = {
   srkb: {
     symbol: 'SRKb',
     address: {
+      1: '0x0488401c3F535193Fa8Df029d9fFe615A06E74E6',
       56: '0xC3440c10c4F36f354eB591B19FafB4906d449B75',
       97: '0xC3440c10c4F36f354eB591B19FafB4906d449B75',
     },
