@@ -358,7 +358,8 @@ const Pools: React.FC = () => {
                   <em>Select Asset</em>
                 </MenuItem>
                 <MenuItem value={1} divider>
-                  <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp; USDT
+                  <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp;
+                  USDT
                 </MenuItem>
                 <MenuItem value={2} divider>
                   <img src={srkTokenIcon} alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
@@ -462,26 +463,32 @@ const Pools: React.FC = () => {
                 Available: {availBalance} {bridgeSymbol}
               </Text>
               <Flex>
-              <Text mt="30px" style={{ fontSize: '14px' }}>
-                You will receive ={' '}
-                <img src={srkTokenIcon} alt="ReceiveLogoIcon" width="14px" height="14px" style={{ verticalAlign: 'middle', marginBottom: '1px' }} />
-                {' '}{receiveAmount}
-                &nbsp;{bridgeSymbol}{' '}
-                <Button
-                  style={{
-                    verticalAlign: 'middle',
-                    height: '14px',
-                    width: '7%',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                    cursor: 'none',
-                    marginBottom: '2.5px'
-                  }}
-                >
-                  {' '}
-                  BEP20
-                </Button>
-              </Text>
+                <Text mt="30px" style={{ fontSize: '14px' }}>
+                  You will receive ={' '}
+                  <img
+                    src={srkTokenIcon}
+                    alt="ReceiveLogoIcon"
+                    width="14px"
+                    height="14px"
+                    style={{ verticalAlign: 'middle', marginBottom: '1px' }}
+                  />{' '}
+                  {receiveAmount}
+                  &nbsp;{bridgeSymbol}{' '}
+                  <Button
+                    style={{
+                      verticalAlign: 'middle',
+                      height: '14px',
+                      width: '7%',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      cursor: 'none',
+                      marginBottom: '2.5px',
+                    }}
+                  >
+                    {' '}
+                    BEP20
+                  </Button>
+                </Text>
               </Flex>
             </Text>
             {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
