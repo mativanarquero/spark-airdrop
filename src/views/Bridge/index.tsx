@@ -37,6 +37,7 @@ import PoolsTable from './components/PoolsTable/PoolsTable'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import { getAprData, getCakeVaultEarnings } from './helpers'
 import srkTokenIcon from './components/assets/srk.png'
+import testTokenIcon from './components/assets/t_token.png'
 
 const CardLayout = styled(FlexLayout)`
   justify-content: flex-start;
@@ -357,10 +358,10 @@ const Pools: React.FC = () => {
                   <em>Select Asset</em>
                 </MenuItem>
                 <MenuItem value={1} divider>
-                  <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp; USDT
+                  <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp; USDT
                 </MenuItem>
                 <MenuItem value={2} divider>
-                  <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
+                  <img src={srkTokenIcon} alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
                 </MenuItem>
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
               </Select>
@@ -383,15 +384,15 @@ const Pools: React.FC = () => {
                     <em>Select Network</em>
                   </MenuItem>
                   <MenuItem value={1} divider>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp;TRX Network
                   </MenuItem>
                   <MenuItem value={2}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Poly Network
                   </MenuItem>
                   <MenuItem value={3}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
                   </MenuItem>
                 </Select>
@@ -411,15 +412,15 @@ const Pools: React.FC = () => {
                     <em>Select Network</em>
                   </MenuItem>
                   <MenuItem value={1} divider>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp;TRX Network
                   </MenuItem>
                   <MenuItem value={2}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Poly Network
                   </MenuItem>
                   <MenuItem value={3}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
                   </MenuItem>
                 </Select>
