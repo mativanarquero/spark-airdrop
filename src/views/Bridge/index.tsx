@@ -3,8 +3,8 @@ import { useLocation, Route, useRouteMatch } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
-import { Heading, Flex, Image } from '@pancakeswap/uikit'
-import { Text, Input, Button, ArrowForwardIcon } from '@sparkpointio/sparkswap-uikit'
+import { Heading, Flex } from '@pancakeswap/uikit'
+import { Text, Input, Button, ArrowForwardIcon, Image } from '@sparkpointio/sparkswap-uikit'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -36,8 +36,8 @@ import HelpButton from './components/HelpButton'
 import PoolsTable from './components/PoolsTable/PoolsTable'
 import { ViewMode } from './components/ToggleView/ToggleView'
 import { getAprData, getCakeVaultEarnings } from './helpers'
-import { ReactComponent as PoolsDarkLogo } from './components/assets/pool-dark.svg'
-import { ReactComponent as PoolsLightLogo } from './components/assets/pool-light.svg'
+import srkTokenIcon from './components/assets/srk.png'
+import testTokenIcon from './components/assets/t_token.png'
 
 const CardLayout = styled(FlexLayout)`
   justify-content: flex-start;
@@ -173,6 +173,8 @@ const Pools: React.FC = () => {
   const isDesktop = useMedia({ maxWidth: 1920 })
   const [availBalance, setAvailBalance] = useState(0)
   const [bridgeAmount, setBridgeAmount] = useState('')
+  const [receiveTokenAddress, setReceiveTokenAddress] = useState('0xC3440c10c4F36f354eB591B19FafB4906d449B75')
+  const [receiveAmount, setReceiveAmount] = useState(0)
 
   const {
     userData: { cakeAtLastUserAction, userShares },
@@ -334,7 +336,7 @@ const Pools: React.FC = () => {
   )
 
   // Bridge symbol is SRKb if bridge network is from BSC to ETH
-  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
+  const bridgeSymbol = toBSC ? 'SRKb' : 'SRK'
 
   const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
   const { path, url, isExact } = useRouteMatch()
@@ -356,10 +358,11 @@ const Pools: React.FC = () => {
                   <em>Select Asset</em>
                 </MenuItem>
                 <MenuItem value={1} divider>
-                  <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp; USDT
+                  <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp;
+                  USDT
                 </MenuItem>
                 <MenuItem value={2} divider>
-                  <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
+                  <img src={srkTokenIcon} alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
                 </MenuItem>
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
               </Select>
@@ -382,15 +385,15 @@ const Pools: React.FC = () => {
                     <em>Select Network</em>
                   </MenuItem>
                   <MenuItem value={1} divider>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp;TRX Network
                   </MenuItem>
                   <MenuItem value={2}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Poly Network
                   </MenuItem>
                   <MenuItem value={3}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
                   </MenuItem>
                 </Select>
@@ -410,15 +413,15 @@ const Pools: React.FC = () => {
                     <em>Select Network</em>
                   </MenuItem>
                   <MenuItem value={1} divider>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp;TRX Network
                   </MenuItem>
                   <MenuItem value={2}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Poly Network
                   </MenuItem>
                   <MenuItem value={3}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
                   </MenuItem>
                 </Select>
@@ -459,24 +462,34 @@ const Pools: React.FC = () => {
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
                 Available: {availBalance} {bridgeSymbol}
               </Text>
-              <Text mt="30px" style={{ fontSize: '14px' }}>
-                You will receive ={' '}
-                <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0
-                SRK{' '}
-                <Button
-                  style={{
-                    verticalAlign: 'middle',
-                    height: '10%',
-                    width: '7%',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                    cursor: 'none',
-                  }}
-                >
-                  {' '}
-                  BEP20
-                </Button>
-              </Text>
+              <Flex>
+                <Text mt="30px" style={{ fontSize: '14px' }}>
+                  You will receive ={' '}
+                  <img
+                    src={srkTokenIcon}
+                    alt="ReceiveLogoIcon"
+                    width="14px"
+                    height="14px"
+                    style={{ verticalAlign: 'middle', marginBottom: '1px' }}
+                  />{' '}
+                  {receiveAmount}
+                  &nbsp;{bridgeSymbol}{' '}
+                  <Button
+                    style={{
+                      verticalAlign: 'middle',
+                      height: '14px',
+                      width: '7%',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      cursor: 'none',
+                      marginBottom: '2.5px',
+                    }}
+                  >
+                    {' '}
+                    BEP20
+                  </Button>
+                </Text>
+              </Flex>
             </Text>
             {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
           </Flex>
