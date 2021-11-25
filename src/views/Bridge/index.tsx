@@ -352,7 +352,7 @@ const Pools: React.FC = () => {
             </Text>
             <FormControl variant="standard">
               {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
-              <Select labelId="asset-dropdown" defaultValue={0} input={<BootstrapInput />}>
+              <Select labelId="asset-dropdown" defaultValue={2} input={<BootstrapInput />}>
                 {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
                 <MenuItem disabled value={0}>
                   <em>Select Asset</em>
@@ -380,7 +380,7 @@ const Pools: React.FC = () => {
                 <Text marginBottom="5px" id="network-dropdown">
                   From
                 </Text>
-                <Select labelId="network-dropdown" defaultValue={0} input={<BootstrapInput />}>
+                <Select labelId="network-dropdown" defaultValue={4} input={<BootstrapInput />}>
                   <MenuItem disabled value={0}>
                     <em>Select Network</em>
                   </MenuItem>
@@ -395,6 +395,10 @@ const Pools: React.FC = () => {
                   <MenuItem value={3}>
                     <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
+                  </MenuItem>
+                  <MenuItem value={4}>
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Ethereum Network
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -408,7 +412,7 @@ const Pools: React.FC = () => {
                 <Text marginBottom="5px" id="network-to-id">
                   To
                 </Text>
-                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={0}>
+                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={3}>
                   <MenuItem disabled value={0}>
                     <em>Select Network</em>
                   </MenuItem>
@@ -423,6 +427,10 @@ const Pools: React.FC = () => {
                   <MenuItem value={3}>
                     <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
+                  </MenuItem>
+                  <MenuItem value={4}>
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Ethereum Network
                   </MenuItem>
                 </Select>
               </FormControl>
