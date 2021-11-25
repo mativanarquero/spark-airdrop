@@ -1,23 +1,47 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState, useContext } from 'react'
+import { useLocation, Route, useRouteMatch } from 'react-router-dom'
 import styled, { ThemeContext } from 'styled-components'
+import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
-import { Button, Flex } from '@pancakeswap/uikit'
-import { ArrowForwardIcon, Input, Text } from '@sparkpointio/sparkswap-uikit'
+import { Heading, Flex } from '@pancakeswap/uikit'
+import { Text, Input, Button, ArrowForwardIcon, Image } from '@sparkpointio/sparkswap-uikit'
+import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
+import ModalInput from 'components/ModalInput'
+import { styled as MuiStyled } from '@mui/material/styles'
+import orderBy from 'lodash/orderBy'
+import partition from 'lodash/partition'
+import { SvgIcon } from '@material-ui/core'
 import { useTranslation } from 'contexts/Localization'
+import usePersistState from 'hooks/usePersistState'
+import { usePools, useFetchCakeVault, useFetchPublicPoolsData, usePollFarmsData, useCakeVault } from 'state/hooks'
+import { latinise } from 'utils/latinise'
+import FlexLayout from 'components/layout/Flex'
+import Page from 'components/layout/Page'
+import PageHeader from 'components/PageHeader'
+import { StyledHr } from 'views/Farms/components/Divider'
+import SearchInput from 'components/SearchInput'
+import { OptionProps } from 'components/Select/Select'
+import { Pool } from 'state/types'
+import useMedia from 'use-media'
 import UnlockButton from 'components/UnlockButton'
-import { useMedia } from 'use-media'
-import tokens from '../../config/constants/tokens'
-import { getAddress } from '../../utils/addressHelpers'
-import { BASE_URL } from '../../config'
-import bridgeTokens from '../../config/constants/bridge/bridgeTokens'
-import bridgeChains from '../../config/constants/bridge/bridgeChains'
-import useTokenBalance from '../../hooks/useTokenBalance'
-import { getBalanceAmount } from '../../utils/formatBalance'
-import ModalInput from '../../components/ModalInput'
+import PoolCard from './components/PoolCard'
+import CakeVaultCard from './components/CakeVaultCard'
+import PoolTabButtons from './components/PoolTabButtons'
+import BountyCard from './components/BountyCard'
+import HelpButton from './components/HelpButton'
+import PoolsTable from './components/PoolsTable/PoolsTable'
+import { ViewMode } from './components/ToggleView/ToggleView'
+import { getAprData, getCakeVaultEarnings } from './helpers'
+import srkTokenIcon from './components/assets/srk.png'
+import testTokenIcon from './components/assets/t_token.png'
+
+const CardLayout = styled(FlexLayout)`
+  justify-content: flex-start;
+`
 
 const PoolControls = styled(Flex)`
   flex-direction: column;
@@ -140,6 +164,9 @@ const Bridge: React.FC = () => {
   const isDesktop = useMedia({ maxWidth: 1920 })
   const [availBalance, setAvailBalance] = useState(0)
   const [bridgeAmount, setBridgeAmount] = useState('')
+  const [receiveAmount, setReceiveAmount] = useState(0)
+
+  // Set default bridge network - from BSC to ETH
   const [toBSC, setToBSC] = useState(false)
   const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
 
@@ -149,20 +176,10 @@ const Bridge: React.FC = () => {
   })
 
   useEffect(() => {
-    // setState(prevState => ({
-    //   ...prevState,
-    //   bridgeTokenAddress: getAddress(tokens.srkb.address),
-    //   'bridgeTokens': bridgeTokens
-    // }))
-    // _setState('bridgeTokenAddress', getAddress(tokens.srkb.address))
-    _setState('bridgeTokens', bridgeTokens)
-  }, [])
-
-  // const { pools: poolsWithoutAutoVault, userDataLoaded } = usePools(account)
-
-  function _setState(name, value) {
-    setState(prevState => ({ ...prevState, [name]: value }))
-  }
+    if (toBSC) {
+      setToBSC(true)
+    }
+  }, [toBSC])
 
   function onChange(event) {
     const { name, value } = event.target
@@ -173,6 +190,7 @@ const Bridge: React.FC = () => {
     return useTokenBalance(tokenAddress)
   }
 
+  // Prepare function to handle bridge amount input
   const handleAmountInputChange = (input: string) => {
     setBridgeAmount(input)
   }
@@ -195,16 +213,17 @@ const Bridge: React.FC = () => {
             </Text>
             <FormControl variant="standard">
               {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
-              <Select labelId="asset-dropdown" defaultValue={0} input={<BootstrapInput />}>
+              <Select labelId="asset-dropdown" defaultValue={2} input={<BootstrapInput />}>
                 {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
                 <MenuItem disabled value={0}>
                   <em>Select Asset</em>
                 </MenuItem>
                 <MenuItem value={1} divider>
-                  <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp; USDT
+                  <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp;
+                  USDT
                 </MenuItem>
                 <MenuItem value={2} divider>
-                  <img src="/srk.png" alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
+                  <img src={srkTokenIcon} alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
                 </MenuItem>
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
               </Select>
@@ -222,21 +241,25 @@ const Bridge: React.FC = () => {
                 <Text marginBottom="5px" id="network-dropdown">
                   From
                 </Text>
-                <Select labelId="network-dropdown" defaultValue={0} input={<BootstrapInput />}>
+                <Select labelId="network-dropdown" defaultValue={4} input={<BootstrapInput />}>
                   <MenuItem disabled value={0}>
                     <em>Select Network</em>
                   </MenuItem>
                   <MenuItem value={1} divider>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp;TRX Network
                   </MenuItem>
                   <MenuItem value={2}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Poly Network
                   </MenuItem>
                   <MenuItem value={3}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
+                  </MenuItem>
+                  <MenuItem value={4}>
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Ethereum Network
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -250,21 +273,25 @@ const Bridge: React.FC = () => {
                 <Text marginBottom="5px" id="network-to-id">
                   To
                 </Text>
-                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={0}>
+                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={3}>
                   <MenuItem disabled value={0}>
                     <em>Select Network</em>
                   </MenuItem>
                   <MenuItem value={1} divider>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp;TRX Network
                   </MenuItem>
                   <MenuItem value={2}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Poly Network
                   </MenuItem>
                   <MenuItem value={3}>
-                    <img src="/t_token.png" alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
                     &nbsp; Binance Smart Chain
+                  </MenuItem>
+                  <MenuItem value={4}>
+                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
+                    &nbsp; Ethereum Network
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -304,24 +331,34 @@ const Bridge: React.FC = () => {
               <Text color="textSubtle" style={{ fontSize: '14px' }}>
                 Available: {availBalance} {bridgeSymbol}
               </Text>
-              <Text mt="30px" style={{ fontSize: '14px' }}>
-                You will receive ={' '}
-                <img src="/srk.png" alt="LogoIcon" width="20px" height="20px" style={{ verticalAlign: 'middle' }} /> 0
-                SRK{' '}
-                <Button
-                  style={{
-                    verticalAlign: 'middle',
-                    height: '10%',
-                    width: '7%',
-                    fontSize: '14px',
-                    borderRadius: '4px',
-                    cursor: 'none',
-                  }}
-                >
-                  {' '}
-                  BEP20
-                </Button>
-              </Text>
+              <Flex>
+                <Text mt="30px" style={{ fontSize: '14px' }}>
+                  You will receive ={' '}
+                  <img
+                    src={srkTokenIcon}
+                    alt="ReceiveLogoIcon"
+                    width="14px"
+                    height="14px"
+                    style={{ verticalAlign: 'middle', marginBottom: '1px' }}
+                  />{' '}
+                  {receiveAmount}
+                  &nbsp;{bridgeSymbol}{' '}
+                  <Button
+                    style={{
+                      verticalAlign: 'middle',
+                      height: '14px',
+                      width: '7%',
+                      fontSize: '14px',
+                      borderRadius: '4px',
+                      cursor: 'none',
+                      marginBottom: '2.5px',
+                    }}
+                  >
+                    {' '}
+                    BEP20
+                  </Button>
+                </Text>
+              </Flex>
             </Text>
             {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
           </Flex>
