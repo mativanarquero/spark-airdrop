@@ -11,9 +11,11 @@ import { web3WithArchivedNodeProvider } from './web3'
 import { getBalanceAmount } from './formatBalance'
 import { BIG_TEN, BIG_ZERO } from './bigNumber'
 
-export const approve = async (lpContract, masterChefContract, account) => {
-  return lpContract.methods
-    .approve(masterChefContract.options.address, ethers.constants.MaxUint256)
+export const approve = async (tokenContract, contractAddress, account) => {
+  console.log(tokenContract.options.address)
+
+  return tokenContract.methods
+    .approve(contractAddress, ethers.constants.MaxUint256)
     .send({ from: account })
 }
 
@@ -117,6 +119,15 @@ export const sousEmergencyUnstake = async (sousChefContract, account) => {
 export const claim = async (contract, account) => {
   return contract.methods
     .getReward()
+    .send({ from: account, gas: DEFAULT_GAS_LIMIT })
+    .on('transactionHash', (tx) => {
+      return tx.transactionHash
+    })
+}
+
+export const bridgeToken = async (contract, account, amount, tokenAddress) => {
+  return contract.methods
+    .relayTokens(tokenAddress, amount)
     .send({ from: account, gas: DEFAULT_GAS_LIMIT })
     .on('transactionHash', (tx) => {
       return tx.transactionHash

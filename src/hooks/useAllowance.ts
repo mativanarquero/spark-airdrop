@@ -1,12 +1,36 @@
 import { useEffect, useState } from 'react'
+import { Token } from '@pancakeswap-libs/sdk'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Contract } from 'web3-eth-contract'
 import { getLotteryAddress } from 'utils/addressHelpers'
 import { BIG_ZERO } from 'utils/bigNumber'
-import { useCake } from './useContract'
+import { useCake, useERC20 } from './useContract'
+import { Bridge } from '../state/types'
 import useRefresh from './useRefresh'
 
+// Retrieve bridge allowance
+export const useBridgeAllowance = (tokenAddress: string, bridgeAddress: string) => {
+  const [allowance, setAllowance] = useState(BIG_ZERO)
+  const { account } = useWeb3React()
+  console.log(account)
+  console.log(allowance.toString())
+  const tokenContract = useERC20(tokenAddress)
+  const { fastRefresh } = useRefresh()
+
+  useEffect(() => {
+    const fetchAllowance = async () => {
+      const res = await tokenContract.methods.allowance(account, bridgeAddress).call()
+      setAllowance(new BigNumber(res))
+    }
+
+    if (account) {
+      fetchAllowance()
+    }
+  }, [account, tokenContract, bridgeAddress, fastRefresh])
+
+  return allowance
+}
 // Retrieve lottery allowance
 export const useLotteryAllowance = () => {
   const [allowance, setAllowance] = useState(BIG_ZERO)

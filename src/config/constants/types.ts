@@ -3,6 +3,8 @@ import { TranslatableText } from 'state/types'
 export interface Address {
   97?: string
   56: string
+  1?: string
+  3?: string
 }
 
 export interface Token {
@@ -53,7 +55,9 @@ export enum PoolCategory {
 
 export interface BridgeConfig {
   name: string,
-  chainID: number,
+  chainId: number,
+  abi: any,
+  address: string,
   tokens: any,
   supportedChains: any,
 }

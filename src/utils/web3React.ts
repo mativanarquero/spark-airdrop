@@ -15,7 +15,11 @@ const ropsten = parseInt('3', 10)
 const injected = new InjectedConnector({ supportedChainIds: [chainId, ethMain, ropsten, bscTestnet] })
 
 const walletconnect = new WalletConnectConnector({
-  rpc: { [chainId]: rpcUrl },
+  rpc: {
+    [chainId]: rpcUrl,
+    [ethMain]: rpcUrl,
+    [ropsten]: rpcUrl,
+  },
   bridge: 'https://bridge.walletconnect.org/',
   qrcode: true,
   pollingInterval: POLLING_INTERVAL,

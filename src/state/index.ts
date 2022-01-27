@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import farmsReducer from './farms'
+import bridgeReducer from './bridge'
 import poolsReducer from './pools'
 import predictionsReducer from './predictions'
 import profileReducer from './profile'
@@ -15,6 +16,7 @@ const store = configureStore({
     achievements: achievementsReducer,
     block: blockReducer,
     farms: farmsReducer,
+    bridge: bridgeReducer,
     pools: poolsReducer,
     predictions: predictionsReducer,
     profile: profileReducer,

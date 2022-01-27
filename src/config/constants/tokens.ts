@@ -629,6 +629,8 @@ const tokens = {
     address: {
       56: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
       97: '',
+      1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      3: '0xc778417e063141139fce010982780140aa0cd5ab',
     },
     decimals: 18,
     projectLink: 'https://ethereum.org/en/',
@@ -1600,6 +1602,7 @@ const tokens = {
     symbol: 'SRKb',
     address: {
       1: '0x0488401c3F535193Fa8Df029d9fFe615A06E74E6',
+      3: '0x962d8c38d4088f3f62e70740df46db214718a855',
       56: '0xC3440c10c4F36f354eB591B19FafB4906d449B75',
       97: '0xC3440c10c4F36f354eB591B19FafB4906d449B75',
     },
