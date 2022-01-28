@@ -1599,12 +1599,13 @@ const tokens = {
     projectLink: 'https://decentral.games/',
   },
   srkb: {
-    symbol: 'SRKb',
+    symbol: 'SRK',
+    symbol2: 'SRKb',
     address: {
       1: '0x0488401c3F535193Fa8Df029d9fFe615A06E74E6',
       3: '0x962d8c38d4088f3f62e70740df46db214718a855',
       56: '0xC3440c10c4F36f354eB591B19FafB4906d449B75',
-      97: '0xC3440c10c4F36f354eB591B19FafB4906d449B75',
+      97: '0xf144cf9669d5f04ed5606d2d3d682c78f9193a5b',
     },
     decimals: 18,
     iconExtension: 'png',

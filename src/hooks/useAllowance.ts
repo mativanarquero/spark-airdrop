@@ -13,8 +13,6 @@ import useRefresh from './useRefresh'
 export const useBridgeAllowance = (tokenAddress: string, bridgeAddress: string) => {
   const [allowance, setAllowance] = useState(BIG_ZERO)
   const { account } = useWeb3React()
-  console.log(account)
-  console.log(allowance.toString())
   const tokenContract = useERC20(tokenAddress)
   const { fastRefresh } = useRefresh()
 

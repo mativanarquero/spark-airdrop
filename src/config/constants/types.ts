@@ -56,8 +56,9 @@ export enum PoolCategory {
 export interface BridgeConfig {
   name: string,
   chainId: number,
-  abi: any,
+  type: any,
   address: string,
+  home?: string,
   tokens: any,
   supportedChains: any,
 }

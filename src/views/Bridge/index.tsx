@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { Flex } from '@pancakeswap/uikit'
-import { Token } from '@pancakeswap-libs/sdk'
+import { TokenAmount } from '@pancakeswap-libs/sdk'
 import { ArrowForwardIcon, Button, Text } from '@sparkpointio/sparkswap-uikit'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -11,17 +11,20 @@ import InputBase from '@mui/material/InputBase'
 import BigNumber from 'bignumber.js'
 import ModalInput from 'components/ModalInput'
 import { useTranslation } from 'contexts/Localization'
-import { useBridge } from 'state/hooks'
-import FlexLayout from 'components/layout/Flex'
+import { useBridges } from 'state/hooks'
 import useMedia from 'use-media'
 import UnlockButton from 'components/UnlockButton'
 import srkTokenIcon from './components/assets/srk.png'
 import testTokenIcon from './components/assets/t_token.png'
 import { getAddress } from '../../utils/addressHelpers'
 import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
-import { getChainName } from './helpers'
+import { getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
 import { useBridgeAllowance } from '../../hooks/useAllowance'
-import { useApprove, useApproveBridge } from '../../hooks/useApprove'
+import { useApproveBridge } from '../../hooks/useApprove'
+import useBridge from '../../hooks/useBridge'
+import { BIG_TEN } from '../../utils/bigNumber'
+import useTokenBalance from '../../hooks/useTokenBalance'
+import { getBalanceAmount } from '../../utils/formatBalance'
 
 
 const StyledContainer = styled(Flex)`
@@ -121,24 +124,21 @@ const Bridge: React.FC = () => {
   const theme = useContext(ThemeContext)
   const { t } = useTranslation()
   const { account, chainId } = useWeb3React()
-  const currentChain = chainId?? parseInt(MAINNET_ETH_CHAIN_ID)
+  const currentChain = chainId ?? parseInt(MAINNET_ETH_CHAIN_ID)
   const isMobile = useMedia({ maxWidth: 500 })
-  const [availBalance, setAvailBalance] = useState(0)
+  const [availBalance, setAvailBalance] = useState('0')
   const [bridgeAmount, setBridgeAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState(0)
   const [requestedApproval, setRequestedApproval] = useState(false)
 
-  const bridges = useBridge()
+  const bridges = useBridges()
   const activeBridge = bridges.data.filter(bridge => {
     return bridge.chainId === currentChain
   })[0]
   const [bridgeToken, setBridgeToken] = useState(activeBridge.tokens[0])
+  const [bridgeTokenSymbol, setBridgeTokenSymbol] = useState(activeBridge.tokens[0].symbol)
   const allowance = useBridgeAllowance(getAddress(bridgeToken.address, currentChain.toString()), activeBridge.address)
   const [isApproved, setIsApproved] = useState(false)
-
-  useEffect(() => {
-    setIsApproved(account && allowance && new BigNumber(allowance).isGreaterThan(0))
-  }, [setIsApproved, account, allowance]);
 
   const { onApprove } = useApproveBridge(getAddress(bridgeToken.address, currentChain.toString()), activeBridge.address)
   const handleApprove = useCallback(async () => {
@@ -149,10 +149,35 @@ const Bridge: React.FC = () => {
       setIsApproved(true)
       setRequestedApproval(false)
     } catch (e) {
+      setRequestedApproval(false)
       console.error(e)
     }
   }, [onApprove])
 
+  const { onBridge } = useBridge(activeBridge)
+
+  const handleTransfer = useCallback(async () => {
+    try {
+      setRequestedApproval(true)
+      await onBridge(new BigNumber(bridgeAmount).times(BIG_TEN.pow(bridgeToken.decimals)).toString(), getAddress(bridgeToken.address, currentChain.toString()))
+      // dispatch(fetchFarmUserDataAsync())
+      setRequestedApproval(false)
+    } catch (e) {
+      setRequestedApproval(false)
+      console.error(e)
+    }
+    // dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+  }, [onBridge, bridgeAmount, bridgeToken, currentChain])
+
+
+  const tokenBalance = useTokenBalance(getAddress(bridgeToken.address, currentChain.toString()))
+  const formatTokenBalance = getBalanceAmount(tokenBalance.balance, bridgeToken.decimals).toFormat(6)
+
+  useEffect(() => {
+    setIsApproved(account && allowance && new BigNumber(allowance).isGreaterThan(0))
+
+    setBridgeTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 56 || currentChain === 97)? 'SRKb': bridgeToken.symbol)
+  }, [setIsApproved, account, allowance, bridgeToken, currentChain])
 
   // const [state, setState] = useState({
   //   bridgeTokenAddress: getAddress(tokens.srkb.address),
@@ -160,8 +185,6 @@ const Bridge: React.FC = () => {
   // })
 
   // // Set default bridge network - from BSC to ETH
-  const [toBSC, setToBSC] = useState(false)
-  const bridgeSymbol = toBSC ? 'SRK' : 'SRKb'
   // useEffect(() => {
   //   if (toBSC) {
   //     setToBSC(true)
@@ -183,9 +206,6 @@ const Bridge: React.FC = () => {
   }
 
 
-  const imgUrl = `${BASE_URL}/images/bridge`
-  const tokenImgUrl = `${BASE_URL}/images/tokens/`
-
   return (
     <StyledContainer style={isMobile ? { justifyContent: 'center' } : { marginLeft: '28vw', marginRight: '28vw' }}>
       <Flex>
@@ -205,7 +225,8 @@ const Bridge: React.FC = () => {
 
                 {activeBridge.tokens.map(token => {
                   return <MenuItem value={token} divider key={token.chainId}>
-                    <img src={`${tokenImgUrl}${getAddress(token.address)}.${token.iconExtension}`} alt='LogoIcon' width='14px'
+                    <img src={getTokenIcon(token)} alt='LogoIcon'
+                         width='14px'
                          style={{ verticalAlign: 'middle' }} /> &nbsp;
                     {token.symbol}
                   </MenuItem>
@@ -228,7 +249,7 @@ const Bridge: React.FC = () => {
                 </Text>
                 <Select labelId='network-dropdown' defaultValue={1} input={<BootstrapInput />}>
                   <MenuItem value={1} divider>
-                    <img src={testTokenIcon} alt='LogoIcon' width='14px' style={{ verticalAlign: 'middle' }} />
+                    <img src={getChainImg(activeBridge.chainId)} alt='LogoIcon' width='14px' style={{ verticalAlign: 'middle' }} />
                     &nbsp;{getChainName(activeBridge.chainId)}
                   </MenuItem>
                 </Select>
@@ -245,8 +266,8 @@ const Bridge: React.FC = () => {
                 </Text>
                 <Select labelId='network-to-id' input={<BootstrapInput />} defaultValue={1}>
                   <MenuItem value={1}>
-                    <img src={testTokenIcon} alt='LogoIcon' width='14px' style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Binance Smart Chain
+                    <img src={getChainImg(activeBridge.supportedChains[0])} alt='LogoIcon' width='14px' style={{ verticalAlign: 'middle' }} />
+                    &nbsp;{getChainName(activeBridge.supportedChains[0])}
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -278,26 +299,27 @@ const Bridge: React.FC = () => {
                   // onSelectMax={() => { handleMaxFunctionHere() }}
                   onChange={(e) => handleAmountInputChange(e.currentTarget.value)}
                   max=''
-                  symbol={bridgeSymbol}
+                  symbol={bridgeTokenSymbol}
                   addLiquidityUrl=''
                 />
               </Flex>
-              <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is 50,000 {bridgeSymbol}</Text>
+              <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is
+                50,000 {bridgeTokenSymbol}</Text>
               <Text color='textSubtle' style={{ fontSize: '14px' }}>
-                Available: {availBalance} {bridgeSymbol}
+                Balance: {formatTokenBalance} {bridgeTokenSymbol}
               </Text>
               <Flex>
                 <Text mt='30px' style={{ fontSize: '14px' }}>
                   You will receive ={' '}
                   <img
-                    src={srkTokenIcon}
+                    src={getTokenIcon(bridgeToken)}
                     alt='ReceiveLogoIcon'
                     width='14px'
                     height='14px'
                     style={{ verticalAlign: 'middle', marginBottom: '1px' }}
                   />{' '}
                   {receiveAmount}
-                  &nbsp;{bridgeSymbol}{' '}
+                  &nbsp;{bridgeTokenSymbol}{' '}
                   <Button
                     style={{
                       verticalAlign: 'middle',
@@ -310,7 +332,7 @@ const Bridge: React.FC = () => {
                     }}
                   >
                     {' '}
-                    BEP20
+                    {getTokenType(currentChain)}
                   </Button>
                 </Text>
               </Flex>
@@ -321,9 +343,9 @@ const Bridge: React.FC = () => {
                 Enable bridge
               </Button>
             }
-            {account && isApproved && <Button fullWidth onClick={handleApprove} disabled={requestedApproval}>
+            {account && isApproved && <Button fullWidth onClick={handleTransfer} disabled={requestedApproval}>
               Transfer
-            </Button> }
+            </Button>}
           </Flex>
         </Flex>
       </Flex>

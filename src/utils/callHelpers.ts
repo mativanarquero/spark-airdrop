@@ -10,6 +10,7 @@ import tokens from 'config/constants/tokens'
 import { web3WithArchivedNodeProvider } from './web3'
 import { getBalanceAmount } from './formatBalance'
 import { BIG_TEN, BIG_ZERO } from './bigNumber'
+import { Bridge } from '../state/types'
 
 export const approve = async (tokenContract, contractAddress, account) => {
   console.log(tokenContract.options.address)
@@ -125,10 +126,22 @@ export const claim = async (contract, account) => {
     })
 }
 
-export const bridgeToken = async (contract, account, amount, tokenAddress) => {
+export const bridgeToken = async (contract, account, amount: string, tokenAddress, bridge: Bridge) => {
+  console.log(bridge.type)
+  console.log(bridge.home)
+  console.log(amount)
+  console.log(contract.options.address)
+  if (bridge.type === 'bscToEth') {
+    return contract.methods
+      .transferAndCall('0xb8D5Ba1dca3A0FBfbd475a2C6f5901F20b5AD2Aa', amount, '0x')
+      .send({ from: account})
+      .on('transactionHash', (tx) => {
+        return tx.transactionHash
+      })
+  }
   return contract.methods
     .relayTokens(tokenAddress, amount)
-    .send({ from: account, gas: DEFAULT_GAS_LIMIT })
+    .send({ from: account})
     .on('transactionHash', (tx) => {
       return tx.transactionHash
     })

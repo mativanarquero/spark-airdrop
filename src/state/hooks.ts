@@ -77,7 +77,7 @@ export const usePollBlockNumber = () => {
 
 // Bridge
 
-export const useBridge = (): BridgeState => {
+export const useBridges = (): BridgeState => {
   const bridge = useSelector((state: State) => state.bridge)
   return bridge
 }
