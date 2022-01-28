@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/prefer-default-export
+import BigNumber from 'bignumber.js'
 import { getAddress } from '../../utils/addressHelpers'
-import { BASE_URL } from '../../config'
+import { BASE_URL, BSC_TO_ETH_FEE, ETH_TO_BSC_FEE } from '../../config'
 import { Token } from '../../config/constants/types'
 
 export const getChainName = (chainId) => {
@@ -40,5 +41,16 @@ export const getTokenType = (chainId) => {
       return `BEP20`
     default:
       return `ERC20`
+  }
+}
+
+export const calculateOutput = (amount, chainId) => {
+  const amt = new BigNumber(amount)
+  switch (chainId) {
+    case 56:
+    case 97:
+      return amt.minus(amt.times(BSC_TO_ETH_FEE)).toString()
+    default:
+      return amt.minus(amt.times(ETH_TO_BSC_FEE)).toString()
   }
 }

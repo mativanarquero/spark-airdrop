@@ -45,6 +45,8 @@ export const API_ASSETS = 'assets'
 export const API_SUMMARY = 'summary'
 export const API_LIQUIDITY = 'liquidity'
 export const API_LASTPRICE = 'last_price'
+export const ETH_TO_BSC_FEE = 0.1
+export const BSC_TO_ETH_FEE = 0.4
 
 export const BASE_BSC_SCAN_URLS = {
   [MAINNET_CHAIN_ID]: 'https://bscscan.com',

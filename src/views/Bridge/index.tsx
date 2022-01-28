@@ -18,10 +18,9 @@ import srkTokenIcon from './components/assets/srk.png'
 import testTokenIcon from './components/assets/t_token.png'
 import { getAddress } from '../../utils/addressHelpers'
 import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
-import { getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
-import { useBridgeAllowance } from '../../hooks/useAllowance'
+import { calculateOutput, getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
 import { useApproveBridge } from '../../hooks/useApprove'
-import useBridge from '../../hooks/useBridge'
+import useBridge, { useBridgeAllowance, useBridgeLimit } from '../../hooks/useBridge'
 import { BIG_TEN } from '../../utils/bigNumber'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import { getBalanceAmount } from '../../utils/formatBalance'
@@ -136,7 +135,8 @@ const Bridge: React.FC = () => {
     return bridge.chainId === currentChain
   })[0]
   const [bridgeToken, setBridgeToken] = useState(activeBridge.tokens[0])
-  const [bridgeTokenSymbol, setBridgeTokenSymbol] = useState(activeBridge.tokens[0].symbol)
+  const [currentTokenSymbol, setCurrentTokenSymbol] = useState(activeBridge.tokens[0].symbol)
+  const [outputTokenSymbol, setOuputTokenSymbol] = useState(activeBridge.tokens[0].symbol)
   const allowance = useBridgeAllowance(getAddress(bridgeToken.address, currentChain.toString()), activeBridge.address)
   const [isApproved, setIsApproved] = useState(false)
 
@@ -170,13 +170,15 @@ const Bridge: React.FC = () => {
   }, [onBridge, bridgeAmount, bridgeToken, currentChain])
 
 
+  const bridgeLimits = useBridgeLimit(bridgeToken, activeBridge)
   const tokenBalance = useTokenBalance(getAddress(bridgeToken.address, currentChain.toString()))
-  const formatTokenBalance = getBalanceAmount(tokenBalance.balance, bridgeToken.decimals).toFormat(6)
+  const tokenBalanceAmount = getBalanceAmount(tokenBalance.balance, bridgeToken.decimals)
 
   useEffect(() => {
     setIsApproved(account && allowance && new BigNumber(allowance).isGreaterThan(0))
 
-    setBridgeTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 56 || currentChain === 97)? 'SRKb': bridgeToken.symbol)
+    setCurrentTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 56 || currentChain === 97)? 'SRKb': bridgeToken.symbol)
+    setOuputTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 1 || currentChain === 3)? 'SRKb': bridgeToken.symbol)
   }, [setIsApproved, account, allowance, bridgeToken, currentChain])
 
   // const [state, setState] = useState({
@@ -202,7 +204,26 @@ const Bridge: React.FC = () => {
 
   // Prepare function to handle bridge amount input
   const handleAmountInputChange = (input: string) => {
+    const amount = new BigNumber(input)
+    if (amount.gt(bridgeLimits.max)) {
+      setBridgeAmount(bridgeLimits.max.toString())
+      return
+    }
+
+    if (amount.lt(bridgeLimits.min)) {
+      setBridgeAmount(bridgeLimits.min.toString())
+      return
+    }
+
     setBridgeAmount(input)
+  }
+  // handle max value
+  const handleMax = () => {
+    if (tokenBalanceAmount.gt(bridgeLimits.max)) {
+      setBridgeAmount(bridgeLimits.max.toString())
+      return;
+    }
+    setBridgeAmount(tokenBalanceAmount.toString())
   }
 
 
@@ -296,17 +317,19 @@ const Bridge: React.FC = () => {
                 /> */}
                 <ModalInput
                   value={bridgeAmount}
-                  // onSelectMax={() => { handleMaxFunctionHere() }}
+                  onSelectMax={handleMax}
                   onChange={(e) => handleAmountInputChange(e.currentTarget.value)}
                   max=''
-                  symbol={bridgeTokenSymbol}
+                  symbol={currentTokenSymbol}
                   addLiquidityUrl=''
                 />
               </Flex>
               <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is
-                50,000 {bridgeTokenSymbol}</Text>
+                &nbsp;<strong>{bridgeLimits.min.toFormat()} {currentTokenSymbol}</strong></Text>
+              <Text style={{ color: 'red', fontSize: '14px' }}>Maximum bridgeable amount is
+                &nbsp;<strong>{bridgeLimits.max.toFormat()} {currentTokenSymbol}</strong></Text>
               <Text color='textSubtle' style={{ fontSize: '14px' }}>
-                Balance: {formatTokenBalance} {bridgeTokenSymbol}
+                Balance: {tokenBalanceAmount.toFormat(6)} {currentTokenSymbol}
               </Text>
               <Flex>
                 <Text mt='30px' style={{ fontSize: '14px' }}>
@@ -318,8 +341,8 @@ const Bridge: React.FC = () => {
                     height='14px'
                     style={{ verticalAlign: 'middle', marginBottom: '1px' }}
                   />{' '}
-                  {receiveAmount}
-                  &nbsp;{bridgeTokenSymbol}{' '}
+                  {calculateOutput(bridgeAmount, currentChain)}
+                  &nbsp;{outputTokenSymbol}{' '}
                   <Button
                     style={{
                       verticalAlign: 'middle',
@@ -332,7 +355,7 @@ const Bridge: React.FC = () => {
                     }}
                   >
                     {' '}
-                    {getTokenType(currentChain)}
+                    {getTokenType(activeBridge.supportedChains[0])}
                   </Button>
                 </Text>
               </Flex>

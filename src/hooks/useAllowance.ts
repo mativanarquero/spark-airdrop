@@ -9,26 +9,6 @@ import { useCake, useERC20 } from './useContract'
 import { Bridge } from '../state/types'
 import useRefresh from './useRefresh'
 
-// Retrieve bridge allowance
-export const useBridgeAllowance = (tokenAddress: string, bridgeAddress: string) => {
-  const [allowance, setAllowance] = useState(BIG_ZERO)
-  const { account } = useWeb3React()
-  const tokenContract = useERC20(tokenAddress)
-  const { fastRefresh } = useRefresh()
-
-  useEffect(() => {
-    const fetchAllowance = async () => {
-      const res = await tokenContract.methods.allowance(account, bridgeAddress).call()
-      setAllowance(new BigNumber(res))
-    }
-
-    if (account) {
-      fetchAllowance()
-    }
-  }, [account, tokenContract, bridgeAddress, fastRefresh])
-
-  return allowance
-}
 // Retrieve lottery allowance
 export const useLotteryAllowance = () => {
   const [allowance, setAllowance] = useState(BIG_ZERO)

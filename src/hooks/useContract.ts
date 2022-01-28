@@ -31,9 +31,9 @@ import { Bridge } from '../state/types'
  * Helper hooks to get specific contracts (by ABI)
  */
 
-export const useBridgeContract = (bridge: Bridge) => {
+export const useBridgeContract = (bridge: Bridge, useHomeAMB = false) => {
   const web3 = useWeb3()
-  return useMemo(() => getBridgeContract(bridge, web3), [bridge, web3])
+  return useMemo(() => getBridgeContract(bridge, web3, useHomeAMB), [bridge, web3, useHomeAMB])
 }
 
 export const useIfoV1Contract = (address: string) => {
