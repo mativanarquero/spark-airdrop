@@ -17,7 +17,17 @@ const Menu = (props) => {
   const [ network, setNetwork ] = useState('')
 
   useEffect (() => {
-    (() => chainId === 1 || chainId === 3 || chainId === 4 || chainId === 5 ? setNetwork('ETH') : chainId === 97 || chainId === 56 && setNetwork('BSC'))();
+    switch (chainId) {
+        case 1:
+        case 3:
+        case 4:
+        case 5:
+          setNetwork('ETH')
+          break;
+        default:
+          setNetwork('BSC')
+
+    }
   }, [chainId, setNetwork])
 
 
