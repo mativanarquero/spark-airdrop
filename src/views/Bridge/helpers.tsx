@@ -49,7 +49,7 @@ export const calculateOutput = (amount, chainId) => {
   switch (chainId) {
     case 56:
     case 97:
-      return amt.minus(amt.times(BSC_TO_ETH_FEE)).toString()
+      return amt.minus(BSC_TO_ETH_FEE).toString()
     default:
       return amt.minus(amt.times(ETH_TO_BSC_FEE)).toString()
   }

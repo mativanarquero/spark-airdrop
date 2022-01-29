@@ -12,6 +12,7 @@ interface ModalInputProps {
   value: string
   addLiquidityUrl?: string
   inputTitle?: string
+  inputType?: string
   decimals?: number
 }
 
@@ -76,7 +77,9 @@ const ModalInput: React.FC<ModalInputProps> = ({
   value,
   // addLiquidityUrl,
   // inputTitle,
+  inputType,
   decimals = 18,
+
 }) => {
   const { t } = useTranslation()
   const isBalanceZero = max === '0' || !max
@@ -104,6 +107,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
             inputMode="decimal"
             step="any"
             min="0"
+            type={inputType}
             onChange={onChange}
             placeholder="0"
             value={value}
