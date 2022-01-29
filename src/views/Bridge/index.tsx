@@ -13,9 +13,8 @@ import ModalInput from 'components/ModalInput'
 import { useTranslation } from 'contexts/Localization'
 import { useBridges } from 'state/hooks'
 import useMedia from 'use-media'
+import { Grid } from '@mui/material'
 import UnlockButton from 'components/UnlockButton'
-import srkTokenIcon from './components/assets/srk.png'
-import testTokenIcon from './components/assets/t_token.png'
 import { getAddress } from '../../utils/addressHelpers'
 import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
 import { calculateOutput, getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
@@ -24,6 +23,7 @@ import useBridge, { useBridgeAllowance, useBridgeLimit } from '../../hooks/useBr
 import { BIG_TEN } from '../../utils/bigNumber'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import { getBalanceAmount } from '../../utils/formatBalance'
+import useToast from '../../hooks/useToast'
 
 
 const StyledContainer = styled(Flex)`
@@ -39,21 +39,21 @@ const StyledContainer = styled(Flex)`
   // border-color: red;
   background-color: #1c304a;
   // style={{ margin: '40px 90px 40px 90px' }}
+  @media (max-width: 4000px) {
+    margin: 60px auto 40px auto!important;
+  }
+
   @media (max-width: 1920px) {
-    margin: 60px 90px 40px 90px;
+    margin: 60px auto 40px auto!important;
   }
   @media (max-width: 500px) {
     height: auto;
     padding-left: 20px;
     padding-right: 20px;
-    margin-left: 25px;
-    margin-right: 25px;
   }
   @media (min-width: 375px) {
     display: flex;
     justify-content: center;
-    margin-left: 15px;
-    margin-right: 15px;
   }
 `
 const ArrowContainer = styled(Flex)`
@@ -125,10 +125,11 @@ const Bridge: React.FC = () => {
   const { account, chainId } = useWeb3React()
   const currentChain = chainId ?? parseInt(MAINNET_ETH_CHAIN_ID)
   const isMobile = useMedia({ maxWidth: 500 })
-  const [availBalance, setAvailBalance] = useState('0')
+  const [isTransferDisabled, setIsTransferDisabled] = useState(true)
   const [bridgeAmount, setBridgeAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState(0)
   const [requestedApproval, setRequestedApproval] = useState(false)
+  const { toastError, toastSuccess } = useToast()
 
   const bridges = useBridges()
   const activeBridge = bridges.data.filter(bridge => {
@@ -146,13 +147,15 @@ const Bridge: React.FC = () => {
       setRequestedApproval(true)
       await onApprove()
       // dispatch(fetchFarmUserDataAsync())
+      toastSuccess(t('Transaction confirmed'), t('You can now bridge your tokens'))
       setIsApproved(true)
       setRequestedApproval(false)
     } catch (e) {
+      toastError(t('Something went wrong, please try again'))
       setRequestedApproval(false)
       console.error(e)
     }
-  }, [onApprove])
+  }, [onApprove, toastSuccess, toastError, t])
 
   const { onBridge } = useBridge(activeBridge)
 
@@ -160,14 +163,16 @@ const Bridge: React.FC = () => {
     try {
       setRequestedApproval(true)
       await onBridge(new BigNumber(bridgeAmount).times(BIG_TEN.pow(bridgeToken.decimals)).toString(), getAddress(bridgeToken.address, currentChain.toString()))
+      toastSuccess(t('Transaction confirmed'))
       // dispatch(fetchFarmUserDataAsync())
       setRequestedApproval(false)
     } catch (e) {
+      toastError(t('Something went wrong, please try again'))
       setRequestedApproval(false)
       console.error(e)
     }
     // dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
-  }, [onBridge, bridgeAmount, bridgeToken, currentChain])
+  }, [onBridge, bridgeAmount, bridgeToken, currentChain, toastSuccess, toastError, t])
 
 
   const bridgeLimits = useBridgeLimit(bridgeToken, activeBridge)
@@ -181,38 +186,14 @@ const Bridge: React.FC = () => {
     setOuputTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 1 || currentChain === 3)? 'SRKb': bridgeToken.symbol)
   }, [setIsApproved, account, allowance, bridgeToken, currentChain])
 
-  // const [state, setState] = useState({
-  //   bridgeTokenAddress: getAddress(tokens.srkb.address),
-  //   'bridgeTokens': bridgeTokens
-  // })
-
-  // // Set default bridge network - from BSC to ETH
-  // useEffect(() => {
-  //   if (toBSC) {
-  //     setToBSC(true)
-  //   }
-  // }, [toBSC])
-
-  // function onChange(event) {
-  //   const { name, value } = event.target
-  //   // _setState(name, value)
-  // }
-  //
-  // function GetTokenBalance(tokenAddress) {
-  //   // return useTokenBalance(tokenAddress)
-  // }
 
   // Prepare function to handle bridge amount input
   const handleAmountInputChange = (input: string) => {
     const amount = new BigNumber(input)
-    if (amount.gt(bridgeLimits.max)) {
-      setBridgeAmount(bridgeLimits.max.toString())
-      return
-    }
-
-    if (amount.lt(bridgeLimits.min)) {
-      setBridgeAmount(bridgeLimits.min.toString())
-      return
+    if (amount.gte(bridgeLimits.min) && amount.lte(bridgeLimits.max) && amount.lte(tokenBalanceAmount)) {
+      setIsTransferDisabled(false)
+    } else {
+      setIsTransferDisabled(true)
     }
 
     setBridgeAmount(input)
@@ -221,17 +202,19 @@ const Bridge: React.FC = () => {
   const handleMax = () => {
     if (tokenBalanceAmount.gt(bridgeLimits.max)) {
       setBridgeAmount(bridgeLimits.max.toString())
+      setIsTransferDisabled(false)
       return;
     }
     setBridgeAmount(tokenBalanceAmount.toString())
+    setIsTransferDisabled(false)
   }
 
 
   return (
-    <StyledContainer style={isMobile ? { justifyContent: 'center' } : { marginLeft: '28vw', marginRight: '28vw' }}>
-      <Flex>
-        <Flex>
-          <Flex flexDirection='column' style={isMobile ? { width: '300px' } : {}}>
+    <Grid xs={12} sm={12} md={8} lg={6} margin='auto'>
+      <StyledContainer>
+        <Flex width='100%'>
+          <Flex flexDirection='column' style={isMobile ? { width: '300px' } : {width: '100%'}}>
             <Text marginBottom='5px' marginTop='5px'>
               Asset
             </Text>
@@ -294,32 +277,33 @@ const Bridge: React.FC = () => {
               </FormControl>
             </Flex>
             {/* <Text style={{ marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
-              If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
-              <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
-            </Text> */}
+            If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
+            <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
+          </Text> */}
             <Text color='text' fontSize='16px' marginBottom='40px'>
               Amount
               <Flex>
                 {/* <Input
-                  type="Number"
-                  // disabled
-                  // value={collection}
-                  // maxLength={158}
-                  style={{
-                    marginTop: '15px',
-                    width: '100%',
-                    height: '100px',
-                    borderRadius: '6px',
-                    backgroundColor: theme.colors.background,
-                    fontSize: '32px',
-                  }}
-                  placeholder={t('Enter amount here')}
-                /> */}
+                type="Number"
+                // disabled
+                // value={collection}
+                // maxLength={158}
+                style={{
+                  marginTop: '15px',
+                  width: '100%',
+                  height: '100px',
+                  borderRadius: '6px',
+                  backgroundColor: theme.colors.background,
+                  fontSize: '32px',
+                }}
+                placeholder={t('Enter amount here')}
+              /> */}
                 <ModalInput
                   value={bridgeAmount}
                   onSelectMax={handleMax}
                   onChange={(e) => handleAmountInputChange(e.currentTarget.value)}
                   max=''
+                  inputType='number'
                   symbol={currentTokenSymbol}
                   addLiquidityUrl=''
                 />
@@ -366,13 +350,14 @@ const Bridge: React.FC = () => {
                 Enable bridge
               </Button>
             }
-            {account && isApproved && <Button fullWidth onClick={handleTransfer} disabled={requestedApproval}>
+            {account && isApproved && <Button fullWidth onClick={handleTransfer} disabled={requestedApproval || isTransferDisabled}>
               Transfer
             </Button>}
           </Flex>
         </Flex>
-      </Flex>
-    </StyledContainer>
+      </StyledContainer>
+    </Grid>
+
   )
 }
 
