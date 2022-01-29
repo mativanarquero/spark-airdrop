@@ -14,26 +14,10 @@ const Menu = (props) => {
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const { currentLanguage, setLanguage } = useTranslation()
-  const [ network, setNetwork ] = useState('')
-
-  useEffect (() => {
-    switch (chainId) {
-        case 1:
-        case 3:
-        case 4:
-        case 5:
-          setNetwork('ETH')
-          break;
-        default:
-          setNetwork('BSC')
-
-    }
-  }, [chainId, setNetwork])
-
 
   return (
     <UikitMenu
-      network={network}
+      network={chainId}
       account={account}
       login={login}
       logout={logout}
