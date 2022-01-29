@@ -249,7 +249,7 @@ const Bridge: React.FC = () => {
                     <img src={getTokenIcon(token)} alt='LogoIcon'
                          width='14px'
                          style={{ verticalAlign: 'middle' }} /> &nbsp;
-                    {token.symbol}
+                    {currentTokenSymbol}
                   </MenuItem>
                 })}
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
