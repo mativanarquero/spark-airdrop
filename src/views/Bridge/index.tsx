@@ -1,66 +1,30 @@
-import React, { useEffect, useMemo, useRef, useState, useContext } from 'react'
-import { useLocation, Route, useRouteMatch } from 'react-router-dom'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
-import { Heading, Flex } from '@pancakeswap/uikit'
-import { Text, Input, Button, ArrowForwardIcon, Image } from '@sparkpointio/sparkswap-uikit'
-import InputLabel from '@mui/material/InputLabel'
+import { Flex } from '@pancakeswap/uikit'
+import { TokenAmount } from '@pancakeswap-libs/sdk'
+import { ArrowForwardIcon, Button, Text } from '@sparkpointio/sparkswap-uikit'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
+import BigNumber from 'bignumber.js'
 import ModalInput from 'components/ModalInput'
-import { styled as MuiStyled } from '@mui/material/styles'
-import orderBy from 'lodash/orderBy'
-import partition from 'lodash/partition'
-import { SvgIcon } from '@material-ui/core'
 import { useTranslation } from 'contexts/Localization'
-import usePersistState from 'hooks/usePersistState'
-import { usePools, useFetchCakeVault, useFetchPublicPoolsData, usePollFarmsData, useCakeVault } from 'state/hooks'
-import { latinise } from 'utils/latinise'
-import FlexLayout from 'components/layout/Flex'
-import Page from 'components/layout/Page'
-import PageHeader from 'components/PageHeader'
-import { StyledHr } from 'views/Farms/components/Divider'
-import SearchInput from 'components/SearchInput'
-import { OptionProps } from 'components/Select/Select'
-import { Pool } from 'state/types'
+import { useBridges } from 'state/hooks'
 import useMedia from 'use-media'
 import UnlockButton from 'components/UnlockButton'
-import PoolCard from './components/PoolCard'
-import CakeVaultCard from './components/CakeVaultCard'
-import PoolTabButtons from './components/PoolTabButtons'
-import BountyCard from './components/BountyCard'
-import HelpButton from './components/HelpButton'
-import PoolsTable from './components/PoolsTable/PoolsTable'
-import { ViewMode } from './components/ToggleView/ToggleView'
-import { getAprData, getCakeVaultEarnings } from './helpers'
 import srkTokenIcon from './components/assets/srk.png'
 import testTokenIcon from './components/assets/t_token.png'
+import { getAddress } from '../../utils/addressHelpers'
+import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
+import { calculateOutput, getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
+import { useApproveBridge } from '../../hooks/useApprove'
+import useBridge, { useBridgeAllowance, useBridgeLimit } from '../../hooks/useBridge'
+import { BIG_TEN } from '../../utils/bigNumber'
+import useTokenBalance from '../../hooks/useTokenBalance'
+import { getBalanceAmount } from '../../utils/formatBalance'
 
-const CardLayout = styled(FlexLayout)`
-  justify-content: flex-start;
-`
-
-const PoolControls = styled(Flex)`
-  flex-direction: column;
-  margin-bottom: 24px;
-  ${({ theme }) => theme.mediaQueries.md} {
-    flex-direction: row;
-  }
-`
-
-const SearchSortContainer = styled(Flex)`
-  gap: 10px;
-  justify-content: space-between;
-`
-
-const ControlStretch = styled(Flex)`
-  > div {
-    flex: 1;
-  }
-`
 
 const StyledContainer = styled(Flex)`
   padding: 30px;
@@ -71,7 +35,7 @@ const StyledContainer = styled(Flex)`
   border-radius: 6px;
   border-style: solid solid solid solid;
   border-width: 2px;
-  // border-color: ${({ theme }) => theme.colors.primary};
+    // border-color: ${({ theme }) => theme.colors.primary};
   // border-color: red;
   background-color: #1c304a;
   // style={{ margin: '40px 90px 40px 90px' }}
@@ -119,6 +83,7 @@ const ArrowContainer = styled(Flex)`
 export const StyledLink = styled.a`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.primary};
+
   &:focus,
   &:hover,
   &:visited,
@@ -153,251 +118,160 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
   },
 }))
 
-const NUMBER_OF_POOLS_VISIBLE = 12
 
-const Pools: React.FC = () => {
+const Bridge: React.FC = () => {
   const theme = useContext(ThemeContext)
-  const location = useLocation()
   const { t } = useTranslation()
-  const { account } = useWeb3React()
-  const { pools: poolsWithoutAutoVault, userDataLoaded } = usePools(account)
-  const [stakedOnly, setStakedOnly] = usePersistState(false, { localStorageKey: 'pancake_pool_staked' })
-  const [numberOfPoolsVisible, setNumberOfPoolsVisible] = useState(NUMBER_OF_POOLS_VISIBLE)
-  const [observerIsSet, setObserverIsSet] = useState(false)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
-  const [viewMode, setViewMode] = usePersistState(ViewMode.TABLE, { localStorageKey: 'pancake_farm_view' })
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sortOption, setSortOption] = useState('hot')
+  const { account, chainId } = useWeb3React()
+  const currentChain = chainId ?? parseInt(MAINNET_ETH_CHAIN_ID)
   const isMobile = useMedia({ maxWidth: 500 })
-  const isStandard = useMedia({ maxWidth: 1366 })
-  const isDesktop = useMedia({ maxWidth: 1920 })
-  const [availBalance, setAvailBalance] = useState(0)
+  const [availBalance, setAvailBalance] = useState('0')
   const [bridgeAmount, setBridgeAmount] = useState('')
   const [receiveAmount, setReceiveAmount] = useState(0)
+  const [requestedApproval, setRequestedApproval] = useState(false)
 
-  const {
-    userData: { cakeAtLastUserAction, userShares },
-    fees: { performanceFee },
-    pricePerFullShare,
-    totalCakeInVault,
-  } = useCakeVault()
-  const accountHasVaultShares = userShares && userShares.gt(0)
-  const performanceFeeAsDecimal = performanceFee && performanceFee / 100
+  const bridges = useBridges()
+  const activeBridge = bridges.data.filter(bridge => {
+    return bridge.chainId === currentChain
+  })[0]
+  const [bridgeToken, setBridgeToken] = useState(activeBridge.tokens[0])
+  const [currentTokenSymbol, setCurrentTokenSymbol] = useState(activeBridge.tokens[0].symbol)
+  const [outputTokenSymbol, setOuputTokenSymbol] = useState(activeBridge.tokens[0].symbol)
+  const allowance = useBridgeAllowance(getAddress(bridgeToken.address, currentChain.toString()), activeBridge.address)
+  const [isApproved, setIsApproved] = useState(false)
 
-  // Set default bridge network - from BSC to ETH
-  const [toBSC, setToBSC] = useState(false)
-
-  const pools = useMemo(() => {
-    const cakePool = poolsWithoutAutoVault.find((pool) => pool.sousId === 0)
-    const cakeAutoVault = { ...cakePool, isAutoVault: true }
-    return [...poolsWithoutAutoVault]
-  }, [poolsWithoutAutoVault])
-
-  // TODO aren't arrays in dep array checked just by reference, i.e. it will rerender every time reference changes?
-  const [finishedPools, openPools] = useMemo(() => partition(pools, (pool) => pool.isFinished), [pools])
-  const [upcomingPools, notUpcomingPools] = useMemo(() => partition(pools, (pool) => pool.isComingSoon), [pools])
-  const stakedOnlyFinishedPools = useMemo(
-    () =>
-      finishedPools.filter((pool) => {
-        if (pool.isAutoVault) {
-          return accountHasVaultShares
-        }
-        return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
-      }),
-    [finishedPools, accountHasVaultShares],
-  )
-  const stakedOnlyOpenPools = useMemo(
-    () =>
-      openPools.filter((pool) => {
-        if (pool.isAutoVault) {
-          return accountHasVaultShares
-        }
-        return pool.userData && new BigNumber(pool.userData.stakedBalance).isGreaterThan(0)
-      }),
-    [openPools, accountHasVaultShares],
-  )
-  const hasStakeInFinishedPools = stakedOnlyFinishedPools.length > 0
-
-  usePollFarmsData()
-  useFetchCakeVault()
-  useFetchPublicPoolsData()
-
-  // useEffect(() => {
-  //   const showMorePools = (entries) => {
-  //     const [entry] = entries
-  //     if (entry.isIntersecting) {
-  //       setNumberOfPoolsVisible((poolsCurrentlyVisible) => poolsCurrentlyVisible + NUMBER_OF_POOLS_VISIBLE)
-  //     }
-  //   }
-
-  //   if (!observerIsSet) {
-  //     const loadMoreObserver = new IntersectionObserver(showMorePools, {
-  //       rootMargin: '0px',
-  //       threshold: 1,
-  //     })
-  //     loadMoreObserver.observe(loadMoreRef.current)
-  //     setObserverIsSet(true)
-  //   }
-  // }, [observerIsSet])
-
-  // Prepare hook to set Bridge Network
-  useEffect(() => {
-    if (toBSC) {
-      setToBSC(true)
+  const { onApprove } = useApproveBridge(getAddress(bridgeToken.address, currentChain.toString()), activeBridge.address)
+  const handleApprove = useCallback(async () => {
+    try {
+      setRequestedApproval(true)
+      await onApprove()
+      // dispatch(fetchFarmUserDataAsync())
+      setIsApproved(true)
+      setRequestedApproval(false)
+    } catch (e) {
+      setRequestedApproval(false)
+      console.error(e)
     }
-  }, [toBSC])
+  }, [onApprove])
 
-  const showFinishedPools = location.pathname.includes('history')
-  const showUpcomingPools = location.pathname.includes('upcoming')
+  const { onBridge } = useBridge(activeBridge)
 
-  const handleChangeSearchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value)
-  }
+  const handleTransfer = useCallback(async () => {
+    try {
+      setRequestedApproval(true)
+      await onBridge(new BigNumber(bridgeAmount).times(BIG_TEN.pow(bridgeToken.decimals)).toString(), getAddress(bridgeToken.address, currentChain.toString()))
+      // dispatch(fetchFarmUserDataAsync())
+      setRequestedApproval(false)
+    } catch (e) {
+      setRequestedApproval(false)
+      console.error(e)
+    }
+    // dispatch(fetchFarmUserDataAsync({ account, pids: [pid] }))
+  }, [onBridge, bridgeAmount, bridgeToken, currentChain])
 
-  const handleSortOptionChange = (option: OptionProps): void => {
-    setSortOption(option.value)
-  }
+
+  const bridgeLimits = useBridgeLimit(bridgeToken, activeBridge)
+  const tokenBalance = useTokenBalance(getAddress(bridgeToken.address, currentChain.toString()))
+  const tokenBalanceAmount = getBalanceAmount(tokenBalance.balance, bridgeToken.decimals)
+
+  useEffect(() => {
+    setIsApproved(account && allowance && new BigNumber(allowance).isGreaterThan(0))
+
+    setCurrentTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 56 || currentChain === 97)? 'SRKb': bridgeToken.symbol)
+    setOuputTokenSymbol(bridgeToken.symbol === 'SRK' && (currentChain === 1 || currentChain === 3)? 'SRKb': bridgeToken.symbol)
+  }, [setIsApproved, account, allowance, bridgeToken, currentChain])
+
+  // const [state, setState] = useState({
+  //   bridgeTokenAddress: getAddress(tokens.srkb.address),
+  //   'bridgeTokens': bridgeTokens
+  // })
+
+  // // Set default bridge network - from BSC to ETH
+  // useEffect(() => {
+  //   if (toBSC) {
+  //     setToBSC(true)
+  //   }
+  // }, [toBSC])
+
+  // function onChange(event) {
+  //   const { name, value } = event.target
+  //   // _setState(name, value)
+  // }
+  //
+  // function GetTokenBalance(tokenAddress) {
+  //   // return useTokenBalance(tokenAddress)
+  // }
 
   // Prepare function to handle bridge amount input
   const handleAmountInputChange = (input: string) => {
+    const amount = new BigNumber(input)
+    if (amount.gt(bridgeLimits.max)) {
+      setBridgeAmount(bridgeLimits.max.toString())
+      return
+    }
+
+    if (amount.lt(bridgeLimits.min)) {
+      setBridgeAmount(bridgeLimits.min.toString())
+      return
+    }
+
     setBridgeAmount(input)
   }
-
-  const sortPools = (poolsToSort: Pool[]) => {
-    switch (sortOption) {
-      case 'apr':
-        // Ternary is needed to prevent pools without APR (like MIX) getting top spot
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => (pool.apr ? getAprData(pool, performanceFeeAsDecimal).apr : 0),
-          'desc',
-        )
-      case 'earned':
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => {
-            if (!pool.userData || !pool.earningTokenPrice) {
-              return 0
-            }
-            return pool.isAutoVault
-              ? getCakeVaultEarnings(
-                  account,
-                  cakeAtLastUserAction,
-                  userShares,
-                  pricePerFullShare,
-                  pool.earningTokenPrice,
-                ).autoUsdToDisplay
-              : pool.userData.pendingReward.times(pool.earningTokenPrice).toNumber()
-          },
-          'desc',
-        )
-      case 'totalStaked':
-        return orderBy(
-          poolsToSort,
-          (pool: Pool) => (pool.isAutoVault ? totalCakeInVault.toNumber() : pool.totalStaked.toNumber()),
-          'desc',
-        )
-      default:
-        return poolsToSort
+  // handle max value
+  const handleMax = () => {
+    if (tokenBalanceAmount.gt(bridgeLimits.max)) {
+      setBridgeAmount(bridgeLimits.max.toString())
+      return;
     }
+    setBridgeAmount(tokenBalanceAmount.toString())
   }
 
-  const poolsToShow = () => {
-    let chosenPools = []
-    if (showUpcomingPools) {
-      chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools // TODO: @koji @mat-ivan Please apply here how to filter upcoming pools
-    } else if (showFinishedPools) {
-      chosenPools = stakedOnly ? stakedOnlyFinishedPools : finishedPools
-    } else {
-      chosenPools = stakedOnly ? stakedOnlyOpenPools : openPools
-    }
-
-    if (searchQuery) {
-      const lowercaseQuery = latinise(searchQuery.toLowerCase())
-      chosenPools = chosenPools.filter((pool) =>
-        latinise(pool.earningToken.symbol.toLowerCase()).includes(lowercaseQuery),
-      )
-    }
-
-    return sortPools(chosenPools).slice(0, numberOfPoolsVisible)
-  }
-
-  const cardLayout = (
-    <CardLayout>
-      {poolsToShow().map((pool) =>
-        pool.isAutoVault ? (
-          <CakeVaultCard key="auto-cake" pool={pool} showStakedOnly={stakedOnly} />
-        ) : (
-          <PoolCard key={pool.sousId} pool={pool} account={account} />
-        ),
-      )}
-    </CardLayout>
-  )
-
-  // Bridge symbol is SRKb if bridge network is from ETH to BSC
-  const bridgeSymbol = toBSC ? 'SRKb' : 'SRK'
-
-  const tableLayout = <PoolsTable pools={poolsToShow()} account={account} userDataLoaded={userDataLoaded} />
-  const { path, url, isExact } = useRouteMatch()
-  const [activeSelect, setActiveSelect] = useState(false)
 
   return (
     <StyledContainer style={isMobile ? { justifyContent: 'center' } : { marginLeft: '28vw', marginRight: '28vw' }}>
       <Flex>
         <Flex>
-          <Flex flexDirection="column" style={isMobile ? { width: '300px' } : {}}>
-            <Text marginBottom="5px" marginTop="5px">
+          <Flex flexDirection='column' style={isMobile ? { width: '300px' } : {}}>
+            <Text marginBottom='5px' marginTop='5px'>
               Asset
             </Text>
-            <FormControl variant="standard">
+            <FormControl variant='standard'>
               {/* <InputLabel id="asset-dropdown" style={{color: theme.colors.text}}>Select Asset</InputLabel> */}
-              <Select labelId="asset-dropdown" defaultValue={2} input={<BootstrapInput />}>
+              <Select labelId='asset-dropdown' defaultValue={activeBridge.tokens[0]} onChange={setBridgeToken}
+                      input={<BootstrapInput />}>
                 {/* {activeSelect ? <ChevronDown /> : <ChevronUp />} */}
                 <MenuItem disabled value={0}>
                   <em>Select Asset</em>
                 </MenuItem>
-                <MenuItem value={1} divider>
-                  <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} /> &nbsp;
-                  USDT
-                </MenuItem>
-                <MenuItem value={2} divider>
-                  <img src={srkTokenIcon} alt="LogoIcon" width="15px" style={{ verticalAlign: 'middle' }} /> &nbsp; SRKb
-                </MenuItem>
+
+                {activeBridge.tokens.map(token => {
+                  return <MenuItem value={token} divider key={token.chainId}>
+                    <img src={getTokenIcon(token)} alt='LogoIcon'
+                         width='14px'
+                         style={{ verticalAlign: 'middle' }} /> &nbsp;
+                    {token.symbol}
+                  </MenuItem>
+                })}
                 {/* <CollectionsButton setCollection={setCollection} setSelectedCollection={setSelectedCollection} /> */}
               </Select>
             </FormControl>
 
             <Flex
-              flexDirection="row"
+              flexDirection='row'
               style={
                 isMobile
                   ? { marginTop: '35px', columnGap: '10px' }
                   : { marginTop: '40px', columnGap: '30px', justifyContent: 'center' }
               }
             >
-              <FormControl style={{ width: '100%' }} variant="standard">
-                <Text marginBottom="5px" id="network-dropdown">
+              <FormControl style={{ width: '100%' }} variant='standard'>
+                <Text marginBottom='5px' id='network-dropdown'>
                   From
                 </Text>
-                <Select labelId="network-dropdown" defaultValue={4} input={<BootstrapInput />}>
-                  <MenuItem disabled value={0}>
-                    <em>Select Network</em>
-                  </MenuItem>
+                <Select labelId='network-dropdown' defaultValue={1} input={<BootstrapInput />}>
                   <MenuItem value={1} divider>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp;TRX Network
-                  </MenuItem>
-                  <MenuItem value={2}>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Poly Network
-                  </MenuItem>
-                  <MenuItem value={3}>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Binance Smart Chain
-                  </MenuItem>
-                  <MenuItem value={4}>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Ethereum Network
+                    <img src={getChainImg(activeBridge.chainId)} alt='LogoIcon' width='14px' style={{ verticalAlign: 'middle' }} />
+                    &nbsp;{getChainName(activeBridge.chainId)}
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -407,38 +281,23 @@ const Pools: React.FC = () => {
                 <ArrowForwardIcon />
               </ArrowContainer>
 
-              <FormControl variant="standard" style={{ width: '100%' }}>
-                <Text marginBottom="5px" id="network-to-id">
+              <FormControl variant='standard' style={{ width: '100%' }}>
+                <Text marginBottom='5px' id='network-to-id'>
                   To
                 </Text>
-                <Select labelId="network-to-id" input={<BootstrapInput />} defaultValue={3}>
-                  <MenuItem disabled value={0}>
-                    <em>Select Network</em>
-                  </MenuItem>
-                  <MenuItem value={1} divider>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp;TRX Network
-                  </MenuItem>
-                  <MenuItem value={2}>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Poly Network
-                  </MenuItem>
-                  <MenuItem value={3}>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Binance Smart Chain
-                  </MenuItem>
-                  <MenuItem value={4}>
-                    <img src={testTokenIcon} alt="LogoIcon" width="14px" style={{ verticalAlign: 'middle' }} />
-                    &nbsp; Ethereum Network
+                <Select labelId='network-to-id' input={<BootstrapInput />} defaultValue={1}>
+                  <MenuItem value={1}>
+                    <img src={getChainImg(activeBridge.supportedChains[0])} alt='LogoIcon' width='14px' style={{ verticalAlign: 'middle' }} />
+                    &nbsp;{getChainName(activeBridge.supportedChains[0])}
                   </MenuItem>
                 </Select>
               </FormControl>
             </Flex>
-            <Text style={{ marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
+            {/* <Text style={{ marginBottom: '40px', fontSize: '14px', fontStyle: 'italic' }}>
               If you have not added Binance Smart Chain network in your MetaMask yet, please click{' '}
               <StyledLink style={{ color: 'white', cursor: 'pointer' }}>Add Network</StyledLink> and continue
-            </Text>
-            <Text color="text" fontSize="16px" marginBottom="40px">
+            </Text> */}
+            <Text color='text' fontSize='16px' marginBottom='40px'>
               Amount
               <Flex>
                 {/* <Input
@@ -458,29 +317,32 @@ const Pools: React.FC = () => {
                 /> */}
                 <ModalInput
                   value={bridgeAmount}
-                  // onSelectMax={() => { handleMaxFunctionHere() }}
+                  onSelectMax={handleMax}
                   onChange={(e) => handleAmountInputChange(e.currentTarget.value)}
-                  max=""
-                  symbol={bridgeSymbol}
-                  addLiquidityUrl=""
+                  max=''
+                  symbol={currentTokenSymbol}
+                  addLiquidityUrl=''
                 />
               </Flex>
-              <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is 50,000 {bridgeSymbol}</Text>
-              <Text color="textSubtle" style={{ fontSize: '14px' }}>
-                Available: {availBalance} {bridgeSymbol}
+              <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is
+                &nbsp;<strong>{bridgeLimits.min.toFormat()} {currentTokenSymbol}</strong></Text>
+              <Text style={{ color: 'red', fontSize: '14px' }}>Maximum bridgeable amount is
+                &nbsp;<strong>{bridgeLimits.max.toFormat()} {currentTokenSymbol}</strong></Text>
+              <Text color='textSubtle' style={{ fontSize: '14px' }}>
+                Balance: {tokenBalanceAmount.toFormat(6)} {currentTokenSymbol}
               </Text>
               <Flex>
-                <Text mt="30px" style={{ fontSize: '14px' }}>
+                <Text mt='30px' style={{ fontSize: '14px' }}>
                   You will receive ={' '}
                   <img
-                    src={srkTokenIcon}
-                    alt="ReceiveLogoIcon"
-                    width="14px"
-                    height="14px"
+                    src={getTokenIcon(bridgeToken)}
+                    alt='ReceiveLogoIcon'
+                    width='14px'
+                    height='14px'
                     style={{ verticalAlign: 'middle', marginBottom: '1px' }}
                   />{' '}
-                  {receiveAmount}
-                  &nbsp;{bridgeSymbol}{' '}
+                  {calculateOutput(bridgeAmount, currentChain)}
+                  &nbsp;{outputTokenSymbol}{' '}
                   <Button
                     style={{
                       verticalAlign: 'middle',
@@ -493,12 +355,20 @@ const Pools: React.FC = () => {
                     }}
                   >
                     {' '}
-                    BEP20
+                    {getTokenType(activeBridge.supportedChains[0])}
                   </Button>
                 </Text>
               </Flex>
             </Text>
-            {!account ? <UnlockButton mb="15px" width="100%" style={{ borderRadius: '6px' }} /> : null}
+            {!account ?
+              <UnlockButton mb='15px' width='100%' style={{ borderRadius: '6px' }} /> :
+              !isApproved && <Button fullWidth onClick={handleApprove} disabled={requestedApproval}>
+                Enable bridge
+              </Button>
+            }
+            {account && isApproved && <Button fullWidth onClick={handleTransfer} disabled={requestedApproval}>
+              Transfer
+            </Button>}
           </Flex>
         </Flex>
       </Flex>
@@ -506,4 +376,4 @@ const Pools: React.FC = () => {
   )
 }
 
-export default Pools
+export default Bridge

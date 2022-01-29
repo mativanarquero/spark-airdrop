@@ -23,12 +23,18 @@ import {
   getChainlinkOracleContract,
   getSouschefV2Contract,
   getLotteryV2Contract,
-  getLpStakingContract,
+  getLpStakingContract, getBridgeContract,
 } from 'utils/contractHelpers'
+import { Bridge } from '../state/types'
 
 /**
  * Helper hooks to get specific contracts (by ABI)
  */
+
+export const useBridgeContract = (bridge: Bridge, useHomeAMB = false) => {
+  const web3 = useWeb3()
+  return useMemo(() => getBridgeContract(bridge, web3, useHomeAMB), [bridge, web3, useHomeAMB])
+}
 
 export const useIfoV1Contract = (address: string) => {
   const web3 = useWeb3()

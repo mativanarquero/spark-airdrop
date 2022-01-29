@@ -7,9 +7,24 @@ import { useAppDispatch } from 'state'
 import { updateUserAllowance } from 'state/actions'
 import { approve, approveWithAmount } from 'utils/callHelpers'
 import { useTranslation } from 'contexts/Localization'
-import { useCake, useCakeVaultContract, useLottery, useSousChef } from './useContract'
+import { useCake, useCakeVaultContract, useERC20, useLottery, useSousChef } from './useContract'
 import useToast from './useToast'
 import useLastUpdated from './useLastUpdated'
+
+// Approve a bridge
+export const useApproveBridge = (tokenAddress: string, bridgeAddress: string) => {
+  const { account } = useWeb3React()
+  const tokenContract = useERC20(tokenAddress)
+  const handleApprove = useCallback(async () => {
+    try {
+      return await approve(tokenContract, bridgeAddress, account)
+    } catch (e) {
+      return false
+    }
+  }, [account, tokenContract, bridgeAddress])
+
+  return { onApprove: handleApprove }
+}
 
 // Approve a Farm
 export const useApprove = (lpContract: Contract, contractAddress: Contract) => {

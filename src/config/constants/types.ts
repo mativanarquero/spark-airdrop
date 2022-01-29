@@ -3,6 +3,8 @@ import { TranslatableText } from 'state/types'
 export interface Address {
   97?: string
   56: string
+  1?: string
+  3?: string
 }
 
 export interface Token {
@@ -49,6 +51,16 @@ export enum PoolCategory {
   'CORE' = 'Core',
   'BINANCE' = 'Binance', // Pools using native BNB behave differently than pools using a token
   'AUTO' = 'Auto',
+}
+
+export interface BridgeConfig {
+  name: string,
+  chainId: number,
+  type: any,
+  address: string,
+  home?: string,
+  tokens: any,
+  supportedChains: any,
 }
 
 export interface FarmConfig {

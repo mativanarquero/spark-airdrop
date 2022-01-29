@@ -24,12 +24,12 @@ const useTokenBalance = (tokenAddress: string) => {
     balance: BIG_ZERO,
     fetchStatus: NOT_FETCHED,
   })
-  const { account } = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const { fastRefresh } = useRefresh()
-
+  const web3 = useWeb3();
   useEffect(() => {
     const fetchBalance = async () => {
-      const contract = getBep20Contract(tokenAddress)
+      const contract = getBep20Contract(tokenAddress, web3)
       try {
         const res = await contract.methods.balanceOf(account).call()
         setBalanceState({ balance: new BigNumber(res), fetchStatus: SUCCESS })
@@ -45,7 +45,7 @@ const useTokenBalance = (tokenAddress: string) => {
     if (account) {
       fetchBalance()
     }
-  }, [account, tokenAddress, fastRefresh, SUCCESS, FAILED])
+  }, [account, tokenAddress, fastRefresh, SUCCESS, FAILED, web3])
 
   return balanceState
 }

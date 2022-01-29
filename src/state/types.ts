@@ -1,7 +1,7 @@
 import { ThunkAction } from 'redux-thunk'
 import { AnyAction } from '@reduxjs/toolkit'
 import BigNumber from 'bignumber.js'
-import { CampaignType, FarmConfig, Nft, PoolConfig, Team } from 'config/constants/types'
+import { BridgeConfig, CampaignType, FarmConfig, Nft, PoolConfig, Team } from 'config/constants/types'
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, State, unknown, AnyAction>
 
@@ -37,6 +37,10 @@ export interface Farm extends FarmConfig {
     stakedBalance: string
     earnings: string
   }
+}
+
+export interface Bridge extends BridgeConfig {
+  limit?: SerializedBigNumber
 }
 
 export interface Pool extends PoolConfig {
@@ -75,6 +79,10 @@ export interface FarmsState {
   data: Farm[]
   loadArchivedFarmsData: boolean
   userDataLoaded: boolean
+}
+
+export interface BridgeState {
+  data: Bridge[]
 }
 
 export interface VaultFees {
@@ -268,6 +276,7 @@ export interface State {
   achievements: AchievementState
   block: BlockState
   farms: FarmsState
+  bridge: BridgeState
   pools: PoolsState
   predictions: PredictionsState
   profile: ProfileState

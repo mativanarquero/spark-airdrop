@@ -21,7 +21,7 @@ import {
   fetchPoolsUserDataAsync,
   setBlock,
 } from './actions'
-import { AchievementState, Farm, FarmsState, Pool, ProfileState, State, TeamsState } from './types'
+import { AchievementState, BridgeState, Farm, FarmsState, Pool, ProfileState, State, TeamsState } from './types'
 import { fetchProfile } from './profile'
 import { fetchTeam, fetchTeams } from './teams'
 import { fetchAchievements } from './achievements'
@@ -73,6 +73,13 @@ export const usePollBlockNumber = () => {
 
     return () => clearInterval(interval)
   }, [dispatch])
+}
+
+// Bridge
+
+export const useBridges = (): BridgeState => {
+  const bridge = useSelector((state: State) => state.bridge)
+  return bridge
 }
 
 // Farms

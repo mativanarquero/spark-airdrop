@@ -1,91 +1,56 @@
+// eslint-disable-next-line import/prefer-default-export
 import BigNumber from 'bignumber.js'
-import { Pool } from 'state/types'
-import { getRoi, tokenEarnedPerThousandDollarsCompounding } from 'utils/compoundApyHelpers'
-import { getBalanceNumber, getFullDisplayBalance, getDecimalAmount } from 'utils/formatBalance'
+import { getAddress } from '../../utils/addressHelpers'
+import { BASE_URL, BSC_TO_ETH_FEE, ETH_TO_BSC_FEE } from '../../config'
+import { Token } from '../../config/constants/types'
 
-export const convertSharesToCake = (
-  shares: BigNumber,
-  cakePerFullShare: BigNumber,
-  decimals = 18,
-  decimalsToRound = 3,
-) => {
-  const sharePriceNumber = getBalanceNumber(cakePerFullShare, decimals)
-  const amountInCake = new BigNumber(shares.multipliedBy(sharePriceNumber))
-  const cakeAsNumberBalance = getBalanceNumber(amountInCake, decimals)
-  const cakeAsBigNumber = getDecimalAmount(new BigNumber(cakeAsNumberBalance), decimals)
-  const cakeAsDisplayBalance = getFullDisplayBalance(amountInCake, decimals, decimalsToRound)
-  return { cakeAsNumberBalance, cakeAsBigNumber, cakeAsDisplayBalance }
-}
-
-export const convertCakeToShares = (
-  cake: BigNumber,
-  cakePerFullShare: BigNumber,
-  decimals = 18,
-  decimalsToRound = 3,
-) => {
-  const sharePriceNumber = getBalanceNumber(cakePerFullShare, decimals)
-  const amountInShares = new BigNumber(cake.dividedBy(sharePriceNumber))
-  const sharesAsNumberBalance = getBalanceNumber(amountInShares, decimals)
-  const sharesAsBigNumber = getDecimalAmount(new BigNumber(sharesAsNumberBalance), decimals)
-  const sharesAsDisplayBalance = getFullDisplayBalance(amountInShares, decimals, decimalsToRound)
-  return { sharesAsNumberBalance, sharesAsBigNumber, sharesAsDisplayBalance }
-}
-
-const AUTO_VAULT_COMPOUND_FREQUENCY = 288
-const MANUAL_POOL_COMPOUND_FREQUENCY = 1
-
-export const getAprData = (pool: Pool, performanceFee: number) => {
-  const { isAutoVault, earningTokenPrice, apr } = pool
-  // special handling for tokens like tBTC or BIFI where the daily token rewards for $1000 dollars will be less than 0.001 of that token
-  const isHighValueToken = Math.round(earningTokenPrice / 1000) > 0
-  const roundingDecimals = isHighValueToken ? 4 : 2
-
-  //   Estimate & manual for now. 288 = once every 5 mins. We can change once we have a better sense of this
-  const compoundFrequency = isAutoVault ? AUTO_VAULT_COMPOUND_FREQUENCY : MANUAL_POOL_COMPOUND_FREQUENCY
-
-  if (isAutoVault) {
-    const oneThousandDollarsWorthOfToken = 1000 / earningTokenPrice
-    const tokenEarnedPerThousand365D = tokenEarnedPerThousandDollarsCompounding({
-      numberOfDays: 365,
-      farmApr: apr,
-      tokenPrice: earningTokenPrice,
-      roundingDecimals,
-      compoundFrequency,
-      performanceFee,
-    })
-    const autoApr = getRoi({
-      amountEarned: tokenEarnedPerThousand365D,
-      amountInvested: oneThousandDollarsWorthOfToken,
-    })
-    return { apr: autoApr, isHighValueToken, roundingDecimals, compoundFrequency }
+export const getChainName = (chainId) => {
+  switch (chainId) {
+    case 56:
+      return 'Binance Smart Chain'
+    case 97:
+      return 'BSC Testnet'
+    case 3:
+      return 'Ropsten'
+    default:
+      return 'Ethereum'
   }
-  return { apr, isHighValueToken, roundingDecimals, compoundFrequency }
 }
 
-export const getCakeVaultEarnings = (
-  account: string,
-  cakeAtLastUserAction: BigNumber,
-  userShares: BigNumber,
-  pricePerFullShare: BigNumber,
-  earningTokenPrice: number,
-) => {
-  const hasAutoEarnings =
-    account && cakeAtLastUserAction && cakeAtLastUserAction.gt(0) && userShares && userShares.gt(0)
-  const { cakeAsBigNumber } = convertSharesToCake(userShares, pricePerFullShare)
-  const autoCakeProfit = cakeAsBigNumber.minus(cakeAtLastUserAction)
-  const autoCakeToDisplay = autoCakeProfit.gte(0) ? getBalanceNumber(autoCakeProfit, 18) : 0
+export const getChainImg = (chainId) => {
+  const imgUrl = `${BASE_URL}/images/bridge`;
 
-  const autoUsdProfit = autoCakeProfit.times(earningTokenPrice)
-  const autoUsdToDisplay = autoUsdProfit.gte(0) ? getBalanceNumber(autoUsdProfit, 18) : 0
-  return { hasAutoEarnings, autoCakeToDisplay, autoUsdToDisplay }
+  switch (chainId) {
+    case 56:
+    case 97:
+      return `${imgUrl}/bsc.png`
+    default:
+      return `${imgUrl}/eth.png`
+  }
 }
 
-export const getPoolBlockInfo = (pool: Pool, currentBlock: number) => {
-  const { startBlock, endBlock, isFinished } = pool
-  const shouldShowBlockCountdown = Boolean(!isFinished && startBlock && endBlock)
-  const blocksUntilStart = Math.max(startBlock - currentBlock, 0)
-  const blocksRemaining = Math.max(endBlock - currentBlock, 0)
-  const hasPoolStarted = blocksUntilStart === 0 && blocksRemaining > 0
-  const blocksToDisplay = hasPoolStarted ? blocksRemaining : blocksUntilStart
-  return { shouldShowBlockCountdown, blocksUntilStart, blocksRemaining, hasPoolStarted, blocksToDisplay }
+export const getTokenIcon = (token: Token) => {
+  const tokenImgUrl = `${BASE_URL}/images/tokens/`
+  return `${tokenImgUrl}${getAddress(token.address)}.${token.iconExtension}`
+}
+
+export const getTokenType = (chainId) => {
+  switch (chainId) {
+    case 56:
+    case 97:
+      return `BEP20`
+    default:
+      return `ERC20`
+  }
+}
+
+export const calculateOutput = (amount, chainId) => {
+  const amt = new BigNumber(amount)
+  switch (chainId) {
+    case 56:
+    case 97:
+      return amt.minus(amt.times(BSC_TO_ETH_FEE)).toString()
+    default:
+      return amt.minus(amt.times(ETH_TO_BSC_FEE)).toString()
+  }
 }

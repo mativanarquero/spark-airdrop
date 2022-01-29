@@ -3,62 +3,61 @@ import addresses from 'config/constants/contracts'
 import tokens from 'config/constants/tokens'
 import { Address } from 'config/constants/types'
 
-export const getAddress = (address: Address): string => {
-  const chainId = process.env.REACT_APP_CHAIN_ID
-  return address[chainId] ? address[chainId] : address[MAINNET_CHAIN_ID]
+export const getAddress = (address: Address, chainId = MAINNET_CHAIN_ID): string => {
+  return address[chainId]
 }
 
-export const getCakeAddress = () => {
-  return getAddress(tokens.cake.address)
+export const getCakeAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(tokens.cake.address, chainId)
 }
-export const getMasterChefAddress = () => {
-  return getAddress(addresses.masterChef)
+export const getMasterChefAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.masterChef, chainId)
 }
-export const getMulticallAddress = () => {
-  return getAddress(addresses.multiCall)
+export const getMulticallAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.multiCall, chainId)
 }
-export const getWbnbAddress = () => {
-  return getAddress(tokens.wbnb.address)
+export const getWbnbAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(tokens.wbnb.address, chainId)
 }
-export const getLotteryAddress = () => {
-  return getAddress(addresses.lottery)
+export const getLotteryAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.lottery, chainId)
 }
-export const getLotteryTicketAddress = () => {
-  return getAddress(addresses.lotteryNFT)
+export const getLotteryTicketAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.lotteryNFT, chainId)
 }
-export const getLotteryV2Address = () => {
-  return getAddress(addresses.lotteryV2)
+export const getLotteryV2Address = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.lotteryV2, chainId)
 }
-export const getPancakeProfileAddress = () => {
-  return getAddress(addresses.pancakeProfile)
+export const getPancakeProfileAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.pancakeProfile, chainId)
 }
-export const getPancakeRabbitsAddress = () => {
-  return getAddress(addresses.pancakeRabbits)
+export const getPancakeRabbitsAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.pancakeRabbits, chainId)
 }
-export const getBunnyFactoryAddress = () => {
-  return getAddress(addresses.bunnyFactory)
+export const getBunnyFactoryAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.bunnyFactory, chainId)
 }
-export const getClaimRefundAddress = () => {
-  return getAddress(addresses.claimRefund)
+export const getClaimRefundAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.claimRefund, chainId)
 }
-export const getPointCenterIfoAddress = () => {
-  return getAddress(addresses.pointCenterIfo)
+export const getPointCenterIfoAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.pointCenterIfo, chainId)
 }
-export const getBunnySpecialAddress = () => {
-  return getAddress(addresses.bunnySpecial)
+export const getBunnySpecialAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.bunnySpecial, chainId)
 }
-export const getTradingCompetitionAddress = () => {
-  return getAddress(addresses.tradingCompetition)
+export const getTradingCompetitionAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.tradingCompetition, chainId)
 }
-export const getEasterNftAddress = () => {
-  return getAddress(addresses.easterNft)
+export const getEasterNftAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.easterNft, chainId)
 }
-export const getCakeVaultAddress = () => {
-  return getAddress(addresses.cakeVault)
+export const getCakeVaultAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.cakeVault, chainId)
 }
-export const getPredictionsAddress = () => {
-  return getAddress(addresses.predictions)
+export const getPredictionsAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.predictions, chainId)
 }
-export const getChainlinkOracleAddress = () => {
-  return getAddress(addresses.chainlinkOracle)
+export const getChainlinkOracleAddress = (chainId = MAINNET_CHAIN_ID) => {
+  return getAddress(addresses.chainlinkOracle, chainId)
 }

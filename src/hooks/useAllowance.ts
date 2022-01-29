@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Token } from '@pancakeswap-libs/sdk'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Contract } from 'web3-eth-contract'
 import { getLotteryAddress } from 'utils/addressHelpers'
 import { BIG_ZERO } from 'utils/bigNumber'
-import { useCake } from './useContract'
+import { useCake, useERC20 } from './useContract'
+import { Bridge } from '../state/types'
 import useRefresh from './useRefresh'
 
 // Retrieve lottery allowance
