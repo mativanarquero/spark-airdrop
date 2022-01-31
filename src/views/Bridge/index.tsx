@@ -346,13 +346,15 @@ const Bridge: React.FC = () => {
                   <Text style={{ color: 'red', fontSize: '14px' }}>
                     Minimum bridgeable amount is &nbsp;
                     <strong>
-                      {bridgeLimits.min.toFormat()} {currentTokenSymbol}
+                      {/* {bridgeLimits.min.toFormat()} {currentTokenSymbol} */}
+                      50,000 {currentTokenSymbol}
                     </strong>
                   </Text>
                   <Text style={{ color: 'red', fontSize: '14px' }}>
                     Maximum bridgeable amount is &nbsp;
                     <strong>
-                      {bridgeLimits.max.toFormat()} {currentTokenSymbol}
+                      {/* {bridgeLimits.max.toFormat()} {currentTokenSymbol} */}
+                      7,500,000 {currentTokenSymbol}
                     </strong>
                   </Text>
                 </Flex>
