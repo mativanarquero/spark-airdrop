@@ -16,11 +16,7 @@ export const useApproveBridge = (tokenAddress: string, bridgeAddress: string) =>
   const { account } = useWeb3React()
   const tokenContract = useERC20(tokenAddress)
   const handleApprove = useCallback(async () => {
-    try {
-      return await approve(tokenContract, bridgeAddress, account)
-    } catch (e) {
-      return false
-    }
+    return approve(tokenContract, bridgeAddress, account)
   }, [account, tokenContract, bridgeAddress])
 
   return { onApprove: handleApprove }
