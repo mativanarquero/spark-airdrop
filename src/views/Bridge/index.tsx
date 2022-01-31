@@ -207,6 +207,11 @@ const Bridge: React.FC = () => {
 
   // Prepare function to handle bridge amount input
   const handleAmountInputChange = (input: string) => {
+    if (!tokenBalanceAmount.toNumber()) {
+      setBridgeAmount('0')
+      setIsTransferDisabled(true)
+      return
+    }
     const amount = new BigNumber(input)
     if (amount.gte(bridgeLimits.min) && amount.lte(bridgeLimits.max) && amount.lte(tokenBalanceAmount)) {
       setIsTransferDisabled(false)
@@ -218,8 +223,9 @@ const Bridge: React.FC = () => {
   }
   // handle max value
   const handleMax = () => {
-    if (!tokenBalanceAmount) {
+    if (!tokenBalanceAmount.toNumber()) {
       setBridgeAmount('0')
+      setIsTransferDisabled(true)
       return
     }
     if (tokenBalanceAmount.gt(bridgeLimits.max)) {
@@ -233,7 +239,7 @@ const Bridge: React.FC = () => {
 
   return (
     <>
-      <Grid xs={12} sm={12} md={8} lg={6} margin="auto">
+      <Grid xs={12} sm={12} md={8} lg={6} margin="auto" item>
         <StyledContainer>
           <Flex flexDirection="row" width="100%">
             <Flex flexDirection="column" style={{ width: '100%' }}>

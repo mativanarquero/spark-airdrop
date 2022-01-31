@@ -125,13 +125,9 @@ export const claim = async (contract, account) => {
 }
 
 export const bridgeToken = async (contract, account, amount: string, tokenAddress, bridge: Bridge) => {
-  console.log(bridge.type)
-  console.log(bridge.home)
-  console.log(amount)
-  console.log(contract.options.address)
   if (bridge.type === 'bscToEth') {
     return contract.methods
-      .transferAndCall('0xb8D5Ba1dca3A0FBfbd475a2C6f5901F20b5AD2Aa', amount, '0x')
+      .transferAndCall(bridge.home, amount, '0x')
       .send({ from: account })
       .on('transactionHash', (tx) => {
         return tx.transactionHash
