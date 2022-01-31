@@ -2,8 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { Flex } from '@pancakeswap/uikit'
-import { TokenAmount } from '@pancakeswap-libs/sdk'
-import { ArrowForwardIcon, Button, Text, Footer } from '@sparkpointio/sparkswap-uikit'
+import { ArrowForwardIcon, Button, Text } from '@sparkpointio/sparkswap-uikit'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
@@ -16,7 +15,7 @@ import useMedia from 'use-media'
 import { Grid } from '@mui/material'
 import UnlockButton from 'components/UnlockButton'
 import { getAddress } from '../../utils/addressHelpers'
-import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
+import { MAINNET_ETH_CHAIN_ID } from '../../config'
 import { calculateOutput, getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
 import { useApproveBridge } from '../../hooks/useApprove'
 import useBridge, { useBridgeAllowance, useBridgeLimit } from '../../hooks/useBridge'
@@ -98,14 +97,6 @@ export const StyledLink = styled.a`
     text-decoration: none;
   }
 `
-
-export const FooterContainer = styled(Flex)`
-  min-height: 300px;
-  @media (max-width: 1366px) {
-    min-height: 200px;
-  }
-`
-
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   'label + &': {
     marginTop: '10px',
@@ -239,7 +230,7 @@ const Bridge: React.FC = () => {
 
   return (
     <>
-      <Grid xs={12} sm={12} md={8} lg={6} margin="auto" item>
+      <Grid xs={12} sm={12} md={8} lg={6} margin="auto" marginBottom='300px' item>
         <StyledContainer>
           <Flex flexDirection="row" width="100%">
             <Flex flexDirection="column" style={{ width: '100%' }}>
@@ -420,50 +411,6 @@ const Bridge: React.FC = () => {
           </Flex>
         </StyledContainer>
       </Grid>
-      <FooterContainer>
-      <Footer
-      
-        helperLinks={[
-          {
-            label: 'Terms and Conditions',
-            // href: 'https://sparkpointio.github.io/terms_and_conditions/sparkdefi-launchpad/',
-            href: '#',
-          },
-          {
-            label: 'Privacy',
-            // href: 'https://sparkpointio.github.io/privacy_policies/sparkdefi-launchpad/',
-            href: '#',
-          },
-          {
-            label: 'Sitemap',
-            href: 'https://srk.finance/#roadmap',
-          },
-        ]}
-        socLinks={[
-          {
-            label: 'facebook',
-            href: 'https://www.facebook.com/sparkpointio/',
-          },
-          {
-            label: 'twitter',
-            href: 'https://twitter.com/sparkpointio',
-          },
-          {
-            label: 'telegram',
-            href: 'https://t.me/SparkPointOfficial',
-          },
-          {
-            label: 'email',
-            href: 'mailto: support@sparkpoint.io',
-          },
-          {
-            label: 'discord',
-            href: 'https://discord.com/invite/Sgc6yDEAAe',
-          },
-        ]}
-        title="SparkBridge 2022"
-      />
-      </FooterContainer>
     </>
   )
 }
