@@ -19,24 +19,24 @@ const bridgesConfig: BridgeConfig[] = [
     tokens: [tokens.srkb],
     supportedChains: [1],
   },
-  {
-    name: 'Ropsten',
-    address: '0x8b2928170281beb4967883eC72Bd68484d506E08',
-    chainId: 3,
-    type: 'ethToBsc',
-
-    tokens: [tokens.srkb],
-    supportedChains: [97],
-  },
-  {
-    name: 'BSC Testnet',
-    chainId: 97,
-    type: 'bscToEth',
-    address: '0xf144cf9669d5f04ED5606d2d3D682C78f9193a5B',
-    home: '0xb8D5Ba1dca3A0FBfbd475a2C6f5901F20b5AD2Aa',
-    tokens: [tokens.srkb],
-    supportedChains: [3],
-  },
+  // {
+  //   name: 'Ropsten',
+  //   address: '0x8b2928170281beb4967883eC72Bd68484d506E08',
+  //   chainId: 3,
+  //   type: 'ethToBsc',
+  //
+  //   tokens: [tokens.srkb],
+  //   supportedChains: [97],
+  // },
+  // {
+  //   name: 'BSC Testnet',
+  //   chainId: 97,
+  //   type: 'bscToEth',
+  //   address: '0xf144cf9669d5f04ED5606d2d3D682C78f9193a5B',
+  //   home: '0xb8D5Ba1dca3A0FBfbd475a2C6f5901F20b5AD2Aa',
+  //   tokens: [tokens.srkb],
+  //   supportedChains: [3],
+  // },
 ]
 
 export default bridgesConfig
