@@ -14,6 +14,7 @@ interface ModalInputProps {
   inputTitle?: string
   inputType?: string
   decimals?: number
+  disabled?: boolean
 }
 
 const getBoxShadow = ({ isWarning = false, theme }) => {
@@ -79,7 +80,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
   // inputTitle,
   inputType,
   decimals = 18,
-
+  disabled=false
 }) => {
   const { t } = useTranslation()
   const isBalanceZero = max === '0' || !max
@@ -111,6 +112,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
             onChange={onChange}
             placeholder="0"
             value={value}
+            disabled={disabled}
           />
           <Button size="md" onClick={onSelectMax} mr="8px" mb="4px">
             {t('Max')}

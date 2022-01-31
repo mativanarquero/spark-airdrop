@@ -46,7 +46,7 @@ export const API_SUMMARY = 'summary'
 export const API_LIQUIDITY = 'liquidity'
 export const API_LASTPRICE = 'last_price'
 export const ETH_TO_BSC_FEE = 0.001
-export const BSC_TO_ETH_FEE = BIG_TEN.pow(18).times(20000)
+export const BSC_TO_ETH_FEE = new BigNumber(20000)
 
 export const BASE_BSC_SCAN_URLS = {
   [MAINNET_CHAIN_ID]: 'https://bscscan.com',
