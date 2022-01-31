@@ -46,12 +46,21 @@ const StyledContainer = styled(Flex)`
   @media (max-width: 1920px) {
     margin: 60px auto 40px auto!important;
   }
-  @media (max-width: 500px) {
+  @media (max-width: 768px) {
     height: auto;
+    margin: 40px 40px 40px 40px!important;
     padding-left: 20px;
     padding-right: 20px;
   }
+  @media (max-width: 500px) {
+    height: auto;
+    margin: 40px 20px 40px 20px!important;
+    padding-left: 20px;
+    padding-right: 20px;
+    width:460px!important;
+  }
   @media (min-width: 375px) {
+    width:350px!important;
     display: flex;
     justify-content: center;
   }
@@ -213,8 +222,8 @@ const Bridge: React.FC = () => {
   return (
     <Grid xs={12} sm={12} md={8} lg={6} margin='auto'>
       <StyledContainer>
-        <Flex width='100%'>
-          <Flex flexDirection='column' style={isMobile ? { width: '300px' } : {width: '100%'}}>
+        <Flex flexDirection='row' width='100%' >
+          <Flex flexDirection='column' style={{width: '100%'}}>
             <Text marginBottom='5px' marginTop='5px'>
               Asset
             </Text>
