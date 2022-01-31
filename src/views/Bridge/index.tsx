@@ -51,13 +51,14 @@ const StyledContainer = styled(Flex)`
   }
   @media (max-width: 500px) {
     height: auto;
-    margin: 40px 20px 40px 20px !important;
+    margin: 40px auto 40px auto !important;
     padding-left: 20px;
     padding-right: 20px;
     width: 460px !important;
   }
-  @media (max-width: 375px) {
-    width: 350px !important;
+  @media (max-width: 450px) {
+    margin: 10px auto 10px auto !important;
+    width: 340px !important;
     display: flex;
     justify-content: center;
   }
