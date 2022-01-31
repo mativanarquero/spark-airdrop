@@ -2457,10 +2457,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sparkpointio/sparkswap-uikit@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@sparkpointio/sparkswap-uikit/-/sparkswap-uikit-1.1.8.tgz#672d9171fd6be359849e52202103621c5df92dd1"
-  integrity sha512-aDy9/uaO9BKf8ImsMabfG5f2y2IeYIEeZ7HkziO774Ta2XJDXsFlTkG3oFc6zuDLyyRSjLIGSkAtmaMcmmGPgA==
+"@sparkpointio/sparkswap-uikit@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@sparkpointio/sparkswap-uikit/-/sparkswap-uikit-1.2.1.tgz#30a7a5a46415faa7669413a8aa1b7d1c012200e0"
+  integrity sha512-I9UXc5FdYNFtWvVrPhTWp8Yh2enD0Ftu1nh4iw3CRPpA7rRlpZf1FpVd67KPrcxgN7BAsPh+hn7KTl2LEbznXQ==
   dependencies:
     "@types/lodash" "^4.14.162"
     "@types/styled-system" "^5.1.10"
