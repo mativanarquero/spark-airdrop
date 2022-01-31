@@ -15,9 +15,7 @@ import { Bridge } from '../state/types'
 export const approve = async (tokenContract, contractAddress, account) => {
   console.log(tokenContract.options.address)
 
-  return tokenContract.methods
-    .approve(contractAddress, ethers.constants.MaxUint256)
-    .send({ from: account })
+  return tokenContract.methods.approve(contractAddress, ethers.constants.MaxUint256).send({ from: account })
 }
 
 export const approveWithAmount = async (lpContract, masterChefContract, account, amount) => {
@@ -134,14 +132,14 @@ export const bridgeToken = async (contract, account, amount: string, tokenAddres
   if (bridge.type === 'bscToEth') {
     return contract.methods
       .transferAndCall('0xb8D5Ba1dca3A0FBfbd475a2C6f5901F20b5AD2Aa', amount, '0x')
-      .send({ from: account})
+      .send({ from: account })
       .on('transactionHash', (tx) => {
         return tx.transactionHash
       })
   }
   return contract.methods
     .relayTokens(tokenAddress, amount)
-    .send({ from: account})
+    .send({ from: account })
     .on('transactionHash', (tx) => {
       return tx.transactionHash
     })

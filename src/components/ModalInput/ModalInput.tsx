@@ -79,7 +79,6 @@ const ModalInput: React.FC<ModalInputProps> = ({
   // inputTitle,
   inputType,
   decimals = 18,
-
 }) => {
   const { t } = useTranslation()
   const isBalanceZero = max === '0' || !max

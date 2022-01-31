@@ -4,7 +4,7 @@ const teams: Team[] = [
   {
     id: 1,
     name: 'Syrup Storm',
-    description: 'The storm\'s a-comin! Watch out! These bulls are stampeding in a syrupy surge!',
+    description: "The storm's a-comin! Watch out! These bulls are stampeding in a syrupy surge!",
     images: {
       lg: 'syrup-storm-lg.png',
       md: 'syrup-storm-md.png',
@@ -20,7 +20,7 @@ const teams: Team[] = [
   {
     id: 2,
     name: 'Fearsome Flippers',
-    description: 'The flippening is coming. Don\'t get in these bunnies\' way, or you\'ll get flipped, too!',
+    description: "The flippening is coming. Don't get in these bunnies' way, or you'll get flipped, too!",
     images: {
       lg: 'fearsome-flippers-lg.png',
       md: 'fearsome-flippers-md.png',

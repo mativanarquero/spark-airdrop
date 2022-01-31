@@ -26,7 +26,7 @@ const useTokenBalance = (tokenAddress: string) => {
   })
   const { account, chainId } = useWeb3React()
   const { fastRefresh } = useRefresh()
-  const web3 = useWeb3();
+  const web3 = useWeb3()
   useEffect(() => {
     const fetchBalance = async () => {
       const contract = getBep20Contract(tokenAddress, web3)
