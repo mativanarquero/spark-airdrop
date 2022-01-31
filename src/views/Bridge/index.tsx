@@ -309,17 +309,15 @@ const Bridge: React.FC = () => {
                   addLiquidityUrl=''
                 />
               </Flex>
-              <Flex style={{ float: 'right', wordWrap: 'break-word', display: 'inline-block' }}>
-                <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is
-                  &nbsp;<strong>{bridgeLimits.min.toFormat()} {currentTokenSymbol}</strong></Text>
-                <Text style={{ color: 'red', fontSize: '14px' }}>Maximum bridgeable amount is
-                  &nbsp;<strong>{bridgeLimits.max.toFormat()} {currentTokenSymbol}</strong></Text>
-              </Flex>
-              <Flex>
+                <Flex style={{ float: 'right', wordWrap: 'break-word', display: 'inline-block' }}>
+                  <Text style={{ color: 'red', fontSize: '14px' }}>Minimum bridgeable amount is
+                    &nbsp;<strong>{bridgeLimits.min.toFormat()} {currentTokenSymbol}</strong></Text>
+                  <Text style={{ color: 'red', fontSize: '14px' }}>Maximum bridgeable amount is
+                    &nbsp;<strong>{bridgeLimits.max.toFormat()} {currentTokenSymbol}</strong></Text>
+                </Flex>
                 <Text color='textSubtle' style={{ fontSize: '14px' }}>
                   Balance: {tokenBalanceAmount.toFormat(6)} {currentTokenSymbol}
                 </Text>
-              </Flex>
               <Flex>
                 <Text mt='30px' style={{ fontSize: '14px' }}>
                   You will receive ={' '}
