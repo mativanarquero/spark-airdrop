@@ -199,6 +199,11 @@ const Bridge: React.FC = () => {
 
   // Prepare function to handle bridge amount input
   const handleAmountInputChange = (input: string) => {
+    if (!tokenBalanceAmount.toNumber()) {
+      setBridgeAmount('0')
+      setIsTransferDisabled(true)
+      return
+    }
     const amount = new BigNumber(input)
     if (amount.gte(bridgeLimits.min) && amount.lte(bridgeLimits.max) && amount.lte(tokenBalanceAmount)) {
       setIsTransferDisabled(false)
@@ -210,8 +215,9 @@ const Bridge: React.FC = () => {
   }
   // handle max value
   const handleMax = () => {
-    if (!tokenBalanceAmount) {
+    if (!tokenBalanceAmount.toNumber()) {
       setBridgeAmount('0')
+      setIsTransferDisabled(true)
       return
     }
     if (tokenBalanceAmount.gt(bridgeLimits.max)) {
