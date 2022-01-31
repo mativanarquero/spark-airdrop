@@ -3,7 +3,7 @@ import styled, { ThemeContext } from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { Flex } from '@pancakeswap/uikit'
 import { TokenAmount } from '@pancakeswap-libs/sdk'
-import { ArrowForwardIcon, Button, Text } from '@sparkpointio/sparkswap-uikit'
+import { ArrowForwardIcon, Button, Text, Footer } from '@sparkpointio/sparkswap-uikit'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
@@ -211,6 +211,7 @@ const Bridge: React.FC = () => {
 
 
   return (
+    <>
     <Grid xs={12} sm={12} md={8} lg={6} margin='auto'>
       <StyledContainer>
         <Flex width='100%'>
@@ -361,6 +362,46 @@ const Bridge: React.FC = () => {
         </Flex>
       </StyledContainer>
     </Grid>
+    <Footer
+    helperLinks={[
+        {
+            label: 'Terms and Conditions',
+            href: 'https://sparkpointio.github.io/terms_and_conditions/sparkdefi-launchpad/',
+        },
+        {
+            label: 'Privacy',
+            href: 'https://sparkpointio.github.io/privacy_policies/sparkdefi-launchpad/',
+        },
+        {
+            label: 'Sitemap',
+            href: 'https://srk.finance/#roadmap',
+        },
+    ]}
+    socLinks={[
+        {
+            label: 'facebook',
+            href: 'https://www.facebook.com/sparkpointio/',
+        },
+        {
+            label: 'twitter',
+            href: 'https://twitter.com/sparkpointio',
+        },
+        {
+            label: 'telegram',
+            href: 'https://t.me/SparkPointOfficial',
+        },
+        {
+            label: 'email',
+            href: 'mailto: support@sparkpoint.io',
+        },
+        {
+            label: 'discord',
+            href: 'https://discord.com/invite/Sgc6yDEAAe',
+        },
+    ]}
+    title="SparkBridge 2022"
+/>
+</>
 
   )
 }
