@@ -133,7 +133,7 @@ const fetchPublicBridgeData = async (bridge: Bridge): Promise<PublicBridgeData> 
   //   multiplier: `${allocPoint.div(100).toString()}X`,
   // }
   return {
-    limit: '0'
+    limit: '0',
   }
 }
 

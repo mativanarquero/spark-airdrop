@@ -18,7 +18,7 @@ export const getChainName = (chainId) => {
 }
 
 export const getChainImg = (chainId) => {
-  const imgUrl = `${BASE_URL}/images/bridge`;
+  const imgUrl = `${BASE_URL}/images/bridge`
 
   switch (chainId) {
     case 56:

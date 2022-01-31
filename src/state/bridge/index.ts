@@ -6,7 +6,8 @@ import isArchivedPid from 'utils/farmHelpers'
 import { Bridge, BridgeState, Farm } from '../types'
 import fetchBridges from './fetchBridges'
 import {
-  fetchFarmUserAllowances, fetchFarmUserEarnings,
+  fetchFarmUserAllowances,
+  fetchFarmUserEarnings,
   fetchFarmUserStakedBalances,
   fetchFarmUserTokenBalances,
 } from '../farms/fetchFarmUser'

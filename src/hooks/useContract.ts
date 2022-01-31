@@ -23,7 +23,8 @@ import {
   getChainlinkOracleContract,
   getSouschefV2Contract,
   getLotteryV2Contract,
-  getLpStakingContract, getBridgeContract,
+  getLpStakingContract,
+  getBridgeContract,
 } from 'utils/contractHelpers'
 import { Bridge } from '../state/types'
 

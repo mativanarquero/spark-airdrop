@@ -81,7 +81,7 @@ const Nfts: Nft[] = [
     variationId: 15,
   },
   {
-    name: 'Cakeston Easter \'21',
+    name: "Cakeston Easter '21",
     description: 'Melting Easter eggs and melting hearts!',
     images: {
       lg: 'cakeston-easter-21-lg.png',
@@ -95,7 +95,7 @@ const Nfts: Nft[] = [
     variationId: 15,
   },
   {
-    name: 'Flipsie Easter \'21',
+    name: "Flipsie Easter '21",
     description: 'Watch out for Flipsie’s spatula smash!',
     images: {
       lg: 'flipsie-easter-21-lg.png',
@@ -109,7 +109,7 @@ const Nfts: Nft[] = [
     variationId: 14,
   },
   {
-    name: 'Stormy Easter \'21',
+    name: "Stormy Easter '21",
     description: 'Do you like chocolate with your syrup? Go long!',
     images: {
       lg: 'stormy-easter-21-lg.png',
@@ -142,7 +142,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Hiccup',
-    description: 'Oopsie daisy! Hiccup\'s had a bit of an accident. Poor little fella.',
+    description: "Oopsie daisy! Hiccup's had a bit of an accident. Poor little fella.",
     images: {
       lg: 'hiccup-lg.png',
       md: 'hiccup-md.png',
@@ -186,7 +186,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Churro',
-    description: 'Don\'t let that dopey smile deceive you... Churro\'s a master CAKE chef!',
+    description: "Don't let that dopey smile deceive you... Churro's a master CAKE chef!",
     images: {
       lg: 'churro-lg.png',
       md: 'churro-md.png',
@@ -201,7 +201,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Dollop',
-    description: 'Nommm... Oh hi, I\'m just meditating on the meaning of CAKE.',
+    description: "Nommm... Oh hi, I'm just meditating on the meaning of CAKE.",
     images: {
       lg: 'dollop-lg.png',
       md: 'dollop-md.png',
@@ -216,7 +216,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Twinkle',
-    description: 'Three guesses what\'s put that twinkle in those eyes! (Hint: it\'s CAKE)',
+    description: "Three guesses what's put that twinkle in those eyes! (Hint: it's CAKE)",
     images: {
       lg: 'twinkle-lg.png',
       md: 'twinkle-md.png',
@@ -246,7 +246,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Drizzle',
-    description: 'It\'s raining syrup on this bunny, but he doesn\'t seem to mind. Can you blame him?',
+    description: "It's raining syrup on this bunny, but he doesn't seem to mind. Can you blame him?",
     images: {
       lg: 'drizzle-lg.png',
       md: 'drizzle-md.png',
@@ -261,7 +261,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Blueberries',
-    description: 'These bunnies like their pancakes with blueberries. What\'s your favorite topping?',
+    description: "These bunnies like their pancakes with blueberries. What's your favorite topping?",
     images: {
       lg: 'blueberries-lg.png',
       md: 'blueberries-md.png',
@@ -276,7 +276,7 @@ const Nfts: Nft[] = [
   },
   {
     name: 'Circular',
-    description: 'Love makes the world go \'round... but so do pancakes. And these bunnies know it.',
+    description: "Love makes the world go 'round... but so do pancakes. And these bunnies know it.",
     images: {
       lg: 'circular-lg.png',
       md: 'circular-md.png',

@@ -10,7 +10,7 @@ import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
 import config from './config'
 
 const Menu = (props) => {
-  const { account, chainId} = useWeb3React()
+  const { account, chainId } = useWeb3React()
   const { login, logout } = useAuth()
   const { isDark, toggleTheme } = useTheme()
   const { currentLanguage, setLanguage } = useTranslation()

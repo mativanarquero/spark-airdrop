@@ -14,10 +14,13 @@ const useBridge = (bridge: Bridge) => {
   const { account } = useWeb3React()
   const contract = useBridgeContract(bridge)
 
-  const handleBridge = useCallback(async (amount: string, tokenAddress) => {
-    const hash = await bridgeToken(contract, account, amount, tokenAddress, bridge)
-    return hash
-  }, [account, contract, bridge])
+  const handleBridge = useCallback(
+    async (amount: string, tokenAddress) => {
+      const hash = await bridgeToken(contract, account, amount, tokenAddress, bridge)
+      return hash
+    },
+    [account, contract, bridge],
+  )
 
   return { onBridge: handleBridge }
 }
@@ -45,9 +48,9 @@ export const useBridgeAllowance = (tokenAddress: string, bridgeAddress: string) 
 
 export const useBridgeLimit = (token: Token, bridge: Bridge) => {
   const [limits, setLimits] = useState({
-    'daily': BIG_ZERO,
-    'min': BIG_ZERO,
-    'max': BIG_ZERO,
+    daily: BIG_ZERO,
+    min: BIG_ZERO,
+    max: BIG_ZERO,
   })
   const { account } = useWeb3React()
   const contract = useBridgeContract(bridge, bridge.type === 'bscToEth')
@@ -60,9 +63,9 @@ export const useBridgeLimit = (token: Token, bridge: Bridge) => {
       const maxPerTx = await contract.methods.maxPerTx(getAddress(token.address, bridge.chainId.toString())).call()
 
       setLimits({
-        'daily': getBalanceAmount(daily, token.decimals),
-        'min': getBalanceAmount(minPerTx, token.decimals),
-        'max': getBalanceAmount(maxPerTx, token.decimals),
+        daily: getBalanceAmount(daily, token.decimals),
+        min: getBalanceAmount(minPerTx, token.decimals),
+        max: getBalanceAmount(maxPerTx, token.decimals),
       })
     }
 
@@ -73,6 +76,5 @@ export const useBridgeLimit = (token: Token, bridge: Bridge) => {
 
   return limits
 }
-
 
 export default useBridge

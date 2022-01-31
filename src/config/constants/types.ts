@@ -54,13 +54,13 @@ export enum PoolCategory {
 }
 
 export interface BridgeConfig {
-  name: string,
-  chainId: number,
-  type: any,
-  address: string,
-  home?: string,
-  tokens: any,
-  supportedChains: any,
+  name: string
+  chainId: number
+  type: any
+  address: string
+  home?: string
+  tokens: any
+  supportedChains: any
 }
 
 export interface FarmConfig {
