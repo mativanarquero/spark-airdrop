@@ -59,7 +59,7 @@ const StyledContainer = styled(Flex)`
     padding-right: 20px;
     width:460px!important;
   }
-  @media (min-width: 375px) {
+  @media (max-width: 375px) {
     width:350px!important;
     display: flex;
     justify-content: center;
@@ -209,6 +209,10 @@ const Bridge: React.FC = () => {
   }
   // handle max value
   const handleMax = () => {
+    if (!tokenBalanceAmount) {
+      setBridgeAmount('0')
+      return
+    }
     if (tokenBalanceAmount.gt(bridgeLimits.max)) {
       setBridgeAmount(bridgeLimits.max.toString())
       setIsTransferDisabled(false)
@@ -334,7 +338,7 @@ const Bridge: React.FC = () => {
                     height='14px'
                     style={{ verticalAlign: 'middle', marginBottom: '1px' }}
                   />{' '}
-                  {calculateOutput(bridgeAmount, currentChain)}
+                  {calculateOutput(bridgeAmount, currentChain, isTransferDisabled || !isApproved)}
                   &nbsp;{outputTokenSymbol}{' '}
                   <Button
                     style={{
