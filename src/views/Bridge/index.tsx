@@ -364,11 +364,13 @@ const Bridge: React.FC = () => {
     helperLinks={[
         {
             label: 'Terms and Conditions',
-            href: 'https://sparkpointio.github.io/terms_and_conditions/sparkdefi-launchpad/',
+            // href: 'https://sparkpointio.github.io/terms_and_conditions/sparkdefi-launchpad/',
+            href: '#',
         },
         {
             label: 'Privacy',
-            href: 'https://sparkpointio.github.io/privacy_policies/sparkdefi-launchpad/',
+            // href: 'https://sparkpointio.github.io/privacy_policies/sparkdefi-launchpad/',
+            href: '#',
         },
         {
             label: 'Sitemap',
