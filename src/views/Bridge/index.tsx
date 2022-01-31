@@ -230,7 +230,7 @@ const Bridge: React.FC = () => {
 
   return (
     <>
-      <Grid xs={12} sm={12} md={8} lg={6} margin="auto" item>
+      <Grid xs={12} sm={12} md={8} lg={6} margin="auto" marginBottom='300px' item>
         <StyledContainer>
           <Flex flexDirection="row" width="100%">
             <Flex flexDirection="column" style={{ width: '100%' }}>
