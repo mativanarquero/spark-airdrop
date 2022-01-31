@@ -59,7 +59,7 @@ const StyledContainer = styled(Flex)`
     padding-right: 20px;
     width:460px!important;
   }
-  @media (min-width: 375px) {
+  @media (max-width: 375px) {
     width:350px!important;
     display: flex;
     justify-content: center;
