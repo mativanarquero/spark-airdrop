@@ -2,8 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styled, { ThemeContext } from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import { Flex } from '@pancakeswap/uikit'
-import { TokenAmount } from '@pancakeswap-libs/sdk'
-import { ArrowForwardIcon, Button, Text, Footer } from '@sparkpointio/sparkswap-uikit'
+import { ArrowForwardIcon, Button, Text } from '@sparkpointio/sparkswap-uikit'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
@@ -16,7 +15,7 @@ import useMedia from 'use-media'
 import { Grid } from '@mui/material'
 import UnlockButton from 'components/UnlockButton'
 import { getAddress } from '../../utils/addressHelpers'
-import { BASE_URL, MAINNET_ETH_CHAIN_ID } from '../../config'
+import { MAINNET_ETH_CHAIN_ID } from '../../config'
 import { calculateOutput, getChainImg, getChainName, getTokenIcon, getTokenType } from './helpers'
 import { useApproveBridge } from '../../hooks/useApprove'
 import useBridge, { useBridgeAllowance, useBridgeLimit } from '../../hooks/useBridge'
@@ -34,7 +33,7 @@ const StyledContainer = styled(Flex)`
   border-radius: 6px;
   border-style: solid solid solid solid;
   border-width: 2px;
-  // border-color: ${({ theme }) => theme.colors.primary};
+    // border-color: ${({ theme }) => theme.colors.primary};
   // border-color: red;
   background-color: #1c304a;
   // style={{ margin: '40px 90px 40px 90px' }}
@@ -90,6 +89,7 @@ const ArrowContainer = styled(Flex)`
 export const StyledLink = styled.a`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.primary};
+
   &:focus,
   &:hover,
   &:visited,
@@ -352,13 +352,13 @@ const Bridge: React.FC = () => {
                   <Text style={{ color: 'red', fontSize: '14px' }}>
                     Min : &nbsp;
                     <strong>
-                       {bridgeLimits.min.toFormat()} {currentTokenSymbol}
+                      {bridgeLimits.min.toFormat()} {currentTokenSymbol}
                     </strong>
                   </Text>
                   <Text style={{ color: 'red', fontSize: '14px' }}>
                     Max : &nbsp;
                     <strong>
-                       {bridgeLimits.max.toFormat()} {currentTokenSymbol}
+                      {bridgeLimits.max.toFormat()} {currentTokenSymbol}
                     </strong>
                   </Text>
                 </Flex>
@@ -412,47 +412,6 @@ const Bridge: React.FC = () => {
           </Flex>
         </StyledContainer>
       </Grid>
-      <Footer
-        helperLinks={[
-          {
-            label: 'Terms and Conditions',
-            // href: 'https://sparkpointio.github.io/terms_and_conditions/sparkdefi-launchpad/',
-            href: '#',
-          },
-          {
-            label: 'Privacy',
-            // href: 'https://sparkpointio.github.io/privacy_policies/sparkdefi-launchpad/',
-            href: '#',
-          },
-          {
-            label: 'Sitemap',
-            href: 'https://srk.finance/#roadmap',
-          },
-        ]}
-        socLinks={[
-          {
-            label: 'facebook',
-            href: 'https://www.facebook.com/sparkpointio/',
-          },
-          {
-            label: 'twitter',
-            href: 'https://twitter.com/sparkpointio',
-          },
-          {
-            label: 'telegram',
-            href: 'https://t.me/SparkPointOfficial',
-          },
-          {
-            label: 'email',
-            href: 'mailto: support@sparkpoint.io',
-          },
-          {
-            label: 'discord',
-            href: 'https://discord.com/invite/Sgc6yDEAAe',
-          },
-        ]}
-        title="SparkBridge 2022"
-      />
     </>
   )
 }
