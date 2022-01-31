@@ -44,7 +44,10 @@ export const getTokenType = (chainId) => {
   }
 }
 
-export const calculateOutput = (amount, chainId) => {
+export const calculateOutput = (amount, chainId, isTransferDisabled = true) => {
+  if (isTransferDisabled) {
+    return '0'
+  }
   const amt = new BigNumber(amount)
   switch (chainId) {
     case 56:
