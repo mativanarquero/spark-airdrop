@@ -98,6 +98,14 @@ export const StyledLink = styled.a`
     text-decoration: none;
   }
 `
+
+export const FooterContainer = styled(Flex)`
+  min-height: 300px;
+  @media (max-width: 1366px) {
+    min-height: 200px;
+  }
+`
+
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   'label + &': {
     marginTop: '10px',
@@ -406,7 +414,9 @@ const Bridge: React.FC = () => {
           </Flex>
         </StyledContainer>
       </Grid>
+      <FooterContainer>
       <Footer
+      
         helperLinks={[
           {
             label: 'Terms and Conditions',
@@ -447,6 +457,7 @@ const Bridge: React.FC = () => {
         ]}
         title="SparkBridge 2022"
       />
+      </FooterContainer>
     </>
   )
 }
