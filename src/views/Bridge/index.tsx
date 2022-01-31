@@ -33,7 +33,7 @@ const StyledContainer = styled(Flex)`
   border-radius: 6px;
   border-style: solid solid solid solid;
   border-width: 2px;
-    // border-color: ${({ theme }) => theme.colors.primary};
+  // border-color: ${({ theme }) => theme.colors.primary};
   // border-color: red;
   background-color: #1c304a;
   // style={{ margin: '40px 90px 40px 90px' }}
@@ -89,7 +89,6 @@ const ArrowContainer = styled(Flex)`
 export const StyledLink = styled.a`
   text-decoration: none;
   color: ${({ theme }) => theme.colors.primary};
-
   &:focus,
   &:hover,
   &:visited,
@@ -352,13 +351,13 @@ const Bridge: React.FC = () => {
                   <Text style={{ color: 'red', fontSize: '14px' }}>
                     Min : &nbsp;
                     <strong>
-                      {bridgeLimits.min.toFormat()} {currentTokenSymbol}
+                       {bridgeLimits.min.toFormat()} {currentTokenSymbol}
                     </strong>
                   </Text>
                   <Text style={{ color: 'red', fontSize: '14px' }}>
                     Max : &nbsp;
                     <strong>
-                      {bridgeLimits.max.toFormat()} {currentTokenSymbol}
+                       {bridgeLimits.max.toFormat()} {currentTokenSymbol}
                     </strong>
                   </Text>
                 </Flex>
