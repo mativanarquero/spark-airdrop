@@ -13,6 +13,8 @@ import { useTranslation } from 'contexts/Localization'
 import { useBridges } from 'state/hooks'
 import useMedia from 'use-media'
 import { Grid } from '@mui/material'
+import { SvgIcon } from '@material-ui/core'
+import PageHeader from 'components/PageHeader'
 import UnlockButton from 'components/UnlockButton'
 import { getAddress } from '../../utils/addressHelpers'
 import { MAINNET_ETH_CHAIN_ID } from '../../config'
@@ -23,6 +25,8 @@ import { BIG_TEN } from '../../utils/bigNumber'
 import useTokenBalance from '../../hooks/useTokenBalance'
 import { getBalanceAmount } from '../../utils/formatBalance'
 import useToast from '../../hooks/useToast'
+import { ReactComponent as BridgeDarkLogo } from './components/assets/bridge-dark.svg'
+import { ReactComponent as BridgeLightLogo } from './components/assets/bridge-light.svg'
 
 const StyledContainer = styled(Flex)`
   padding: 30px;
@@ -231,7 +235,40 @@ const Bridge: React.FC = () => {
 
   return (
     <>
+      <PageHeader background={theme.card.background}>
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          flexDirection={['column', null, 'row']}
+          style={isMobile ? { flexDirection: 'column-reverse' } : { minHeight: '20vh', marginLeft: '-12px' }}
+          padding="24px"
+        >
+          <Flex flexDirection="column" mr={['8px', 0]}>
+            <Text color="text" fontSize="60px" bold marginBottom="10px">
+              <span style={{ borderBottom: `2px solid ${theme.colors.primary}` }}>Bridge</span>
+            </Text>
+            <Text color="text" style={isMobile ? { fontSize: '17px' } : { fontSize: '27px' }}>
+              Bridge your SRK tokens from Ethereum to BSC and vice versa
+            </Text>
+          </Flex>
+          <Flex
+            style={
+              isMobile
+                ? { fontSize: '150px', margin: 'auto', marginTop: '20px', marginBottom: '20px' }
+                : { fontSize: '240px', marginRight: '-137px', position: 'relative' }
+            }
+          >
+            <SvgIcon
+              component={theme.isDark ? BridgeDarkLogo : BridgeLightLogo}
+              viewBox="0  0 384 512"
+              style={isMobile ? { width: '200px' } : { width: '500px' }}
+              fontSize="inherit"
+            />
+          </Flex>
+        </Flex>
+      </PageHeader>
       <Grid xs={12} sm={12} md={8} lg={6} margin="auto" marginBottom='300px' item>
+      
         <StyledContainer>
           <Flex flexDirection="row" width="100%">
             <Flex flexDirection="column" style={{ width: '100%' }}>
