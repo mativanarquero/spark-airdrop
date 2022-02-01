@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import useEagerConnect from 'hooks/useEagerConnect'
 import { useFetchProfile, usePollBlockNumber, usePollCoreFarmData } from 'state/hooks'
 import { RedirectToPools } from 'views/Farms/Redirects'
+import { RedirectToBridge } from 'views/Bridge/Redirects'
 import GlobalStyle from './style/Global'
 import Menu from './components/Menu'
 import SuspenseWithChunkError from './components/SuspenseWithChunkError'
@@ -96,7 +97,7 @@ const App: React.FC = () => {
             <Route path="/nft">
               <Redirect to="/collectibles" />
             </Route> */}
-            <Route path="/" component={RedirectToPools} />
+            <Route path="/" component={RedirectToBridge} />
             {/* 404 */}
             <Route component={NotFound} />
           </Switch>

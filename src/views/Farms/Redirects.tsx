@@ -6,5 +6,5 @@ export function RedirectToFarms({ location }: RouteComponentProps) {
 }
 
 export function RedirectToPools({ location }: RouteComponentProps) {
-  return <Redirect to={{ ...location, pathname: '/bridge' }} />
+  return <Redirect to={{ ...location, pathname: '/pools' }} />
 }
