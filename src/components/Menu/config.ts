@@ -11,7 +11,7 @@ const config: MenuEntry[] = [
       },
       {
         label: 'Bridge',
-        href: '/Bridge'
+        href: '/bridge'
       }
     ],
   },
