@@ -10,8 +10,8 @@ const config: MenuEntry[] = [
         href: 'https://sparkswap.finance/#/swap'
       },
       {
-        label: 'Bridge',
-        href: '/bridge'
+        label: 'Liquidity',
+        href: 'https://sparkswap.finance/#/pool'
       }
     ],
   },
@@ -43,11 +43,11 @@ const config: MenuEntry[] = [
   //   icon: "PoolIcon",
   //   href: "/pools",
   // },
-  // {
-  //   label: 'Bridge',
-  //   icon: 'BridgeIcon',
-  //   href: '/Bridge',
-  // },
+  {
+    label: 'Bridge',
+    icon: 'BridgeIcon',
+    href: '/bridge',
+  },
   {
     label: 'Launch',
     icon: 'LaunchIcon',
