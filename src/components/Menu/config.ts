@@ -2,12 +2,21 @@ import { MenuEntry } from '@sparkpointio/sparkswap-uikit'
 
 const config: MenuEntry[] = [
   {
-    label: 'Swap',
+    label: 'Trade',
     icon: 'TradeIcon',
-    href: 'https://sparkswap.finance/#/swap',
+    items: [
+      {
+        label: 'Swap',
+        href: 'https://sparkswap.finance/#/swap'
+      },
+      {
+        label: 'Liquidity',
+        href: 'https://sparkswap.finance/#/pool'
+      }
+    ],
   },
   {
-    label: 'Staking',
+    label: 'Stake',
     icon: 'FarmIcon',
     items: [
       {
@@ -37,7 +46,7 @@ const config: MenuEntry[] = [
   {
     label: 'Bridge',
     icon: 'BridgeIcon',
-    href: '/Bridge',
+    href: '/bridge',
   },
   {
     label: 'Launch',
@@ -45,24 +54,32 @@ const config: MenuEntry[] = [
     href: 'https://launch.sparkswap.finance/#/',
   },
   {
-    label: 'Info',
-    icon: 'InfoIcon',
-    href: 'https://sparkswap.info/#/home',
-  },
-  {
     label: 'Airdrop',
     icon: 'AirdropIcon',
     href: 'https://app.srk.finance/#/airdrop',
   },
   {
-    label: 'Teams',
-    icon: 'GroupsIcon',
-    href: 'https://srk.finance/team',
+    label: 'NFT',
+    icon: 'NftIcon',
+    href: 'https://nft.sparkswap.finance/#/create'
   },
   {
-    label: 'Help',
+    label: 'More',
     icon: 'MoreIcon',
-    href: 'https://medium.com/theecosystem/a-beginners-guide-to-sparkswap-79f92a2f7074',
+    items: [
+      {
+        label: 'Info',
+        href: 'https://sparkswap.info/#/home',
+      },
+      {
+        label: 'Teams',
+        href: 'https://srk.finance/team',
+      },
+      {
+        label: 'Help',
+        href: 'https://medium.com/theecosystem/a-beginners-guide-to-sparkswap-79f92a2f7074',
+      },
+    ]
   },
   // {
   //   label: 'Trade',
