@@ -1,12 +1,13 @@
 import { MenuEntry } from '@sparkpointio/sparkswap-uikit'
 
 const config: MenuEntry[] = [
+
   {
     label: 'Trade',
     icon: 'TradeIcon',
     items: [
       {
-        label: 'Swap',
+        label: 'Exchange',
         href: 'https://sparkswap.finance/#/swap'
       },
       {
@@ -20,16 +21,16 @@ const config: MenuEntry[] = [
     icon: 'FarmIcon',
     items: [
       {
-        label: 'Farms',
-        href: '/farms',
+        label: "Farms",
+        href: "https://stake.sparkswap.finance/#/farms",
       },
       {
-        label: 'Pools',
-        href: '/pools',
+        label: "Pools",
+        href: "https://stake.sparkswap.finance/#/pools",
       },
       {
-        label: 'Old Farms/Pools',
-        href: 'https://app.srk.finance/#/stake',
+        label: "Old Farms/Pools",
+        href: "https://app.srk.finance/#/stake",
       },
     ],
   },
@@ -61,7 +62,24 @@ const config: MenuEntry[] = [
   {
     label: 'NFT',
     icon: 'NftIcon',
-    href: 'https://nft.sparkswap.finance/#/create'
+    items: [
+      {
+        label: 'Home',
+        href: 'https://nft.sparkswap.finance/#/create',
+      },
+      {
+        label: 'Create',
+        href: 'https://nft.sparkswap.finance/#/createNFT',
+      },
+      {
+        label: 'My NFTs',
+        href: 'https://nft.sparkswap.finance/#/MyNFT',
+      },
+      {
+        label: 'Marketplace',
+        href: 'https://nft.sparkswap.finance/#/marketplace',
+      },
+    ],
   },
   {
     label: 'More',
