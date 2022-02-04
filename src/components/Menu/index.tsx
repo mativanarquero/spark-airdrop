@@ -27,6 +27,7 @@ const Menu = (props) => {
       langs={languageList}
       setLang={setLanguage}
       links={config}
+      disableDarkOption
       {...props}
     />
   )
