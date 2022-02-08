@@ -2,7 +2,7 @@ import { ContextApi } from 'contexts/Localization/types'
 import { PageMeta } from './types'
 
 export const DEFAULT_META: PageMeta = {
-  title: 'SparkDeFi',
+  title: 'SparkBridge - Bridge your SRK tokens from Ethereum to BSC and vice versa',
   description:
     'Refuel your rocket with SFUEL and travel to the moon with SparkSwap, the prodigious decentralized exchange on Binance Smart Chain.',
   image: 'https://sparkswap.finance//images/192x192_App_Icon.png',
