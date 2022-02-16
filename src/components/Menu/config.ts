@@ -47,7 +47,7 @@ const config: MenuEntry[] = [
   {
     label: 'Bridge',
     icon: 'BridgeIcon',
-    href: '/bridge',
+    href: 'https://bridge.sparkswap.finance/#/bridge',
   },
   {
     label: 'Launch',
@@ -57,7 +57,7 @@ const config: MenuEntry[] = [
   {
     label: 'Airdrop',
     icon: 'AirdropIcon',
-    href: 'https://app.srk.finance/#/airdrop',
+    href: '/airdrop',
   },
   {
     label: 'NFT',

@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 import useEagerConnect from 'hooks/useEagerConnect'
 import { useFetchProfile, usePollBlockNumber, usePollCoreFarmData } from 'state/hooks'
 import { RedirectToPools } from 'views/Farms/Redirects'
-import { RedirectToBridge } from 'views/Bridge/Redirects'
+import { RedirectToAirdrop } from 'views/Airdrop/Redirects'
 import GlobalStyle from './style/Global'
 import Menu from './components/Menu'
 import SuspenseWithChunkError from './components/SuspenseWithChunkError'
@@ -17,7 +17,7 @@ import Pools from './views/Pools'
 // Route-based code splitting
 // Only pool is included in the main bundle because of it's the most visited page
 // const Home = lazy(() => import('./views/Home'))
-const Bridge = lazy(() => import('./views/Bridge'))
+const Airdrop = lazy(() => import('./views/Airdrop'))
 const Farms = lazy(() => import('./views/Farms'))
 const Lottery = lazy(() => import('./views/Lottery'))
 const Ifos = lazy(() => import('./views/Ifos'))
@@ -51,8 +51,8 @@ const App: React.FC = () => {
             {/* <Route path='/' exact>
               <Pools />
             </Route> */}
-            <Route path="/bridge" exact>
-              <Bridge />
+            <Route path="/airdrop" exact>
+              <Airdrop />
             </Route>
             {/* <Route path="/farms">
               <Farms />
@@ -97,7 +97,7 @@ const App: React.FC = () => {
             <Route path="/nft">
               <Redirect to="/collectibles" />
             </Route> */}
-            <Route path="/" component={RedirectToBridge} />
+            <Route path="/" component={RedirectToAirdrop} />
             {/* 404 */}
             <Route component={NotFound} />
           </Switch>
@@ -106,7 +106,7 @@ const App: React.FC = () => {
       <EasterEgg iterations={2} />
       <ToastListener />
 
-      <div style={{
+      {/* <div style={{
         position: 'absolute',
         right: 0,
         left: 0,
@@ -151,9 +151,9 @@ const App: React.FC = () => {
               href: 'https://discord.com/invite/Sgc6yDEAAe',
             },
           ]}
-          title="SparkBridge 2022"
+          title="SparkRewards 2022"
         />
-      </div>
+      </div> */}
     </HashRouter>
   )
 }
